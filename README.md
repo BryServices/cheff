@@ -5,9 +5,31 @@ Application de livraison de repas avec gestion multi-utilisateurs (Clients, Rest
 ## Design
 
 L'application utilise un design moderne inspiré de l'application "Bite" avec :
-- **Couleurs principales** : Rouge foncé (#8B1E1E) et blanc
-- **Couleurs d'accent** : Jaune (#FCD34D) pour les promotions
-- **Style** : Design épuré et moderne avec des bordures arrondies et des ombres douces
+
+### Couleurs
+- **Primary Red** : #A30000 (Rouge principal)
+- **Dark Red** : #8B0000 (Header)
+- **Yellow Badge** : #FFC107 (Badges promotionnels)
+- **White** : #FFFFFF
+- **Light Gray** : #F5F5F5 (Fonds)
+- **Text Dark** : #212121
+- **Text Light** : #757575
+- **Gradient** : Dégradé orange-jaune (#FFA800 to #FFC107) pour les bannières promotionnelles
+
+### Typographie
+- **Titres/Prix** : Montserrat Bold ou Poppins Bold
+- **Texte normal** : Poppins Regular ou Roboto Medium
+- Les polices sont chargées via Google Fonts
+
+### Caractéristiques du design
+- Design mobile-first avec navigation en bas sur mobile
+- Bordures arrondies (rounded-2xl)
+- Ombres douces personnalisées (shadow-bite)
+- Dégradés orange-jaune pour les promotions
+- Badges "50% OFF" en jaune vif
+- Bouton Google Login dans le profil
+- Hamburger menu icon pour mobile
+- Design épuré et moderne avec transitions fluides
 
 ## Technologies
 

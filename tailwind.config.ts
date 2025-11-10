@@ -12,26 +12,46 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         bite: {
-          primary: "#8B1E1E",      // Rouge foncé principal (Bite)
-          dark: "#6B1515",         // Rouge très foncé
+          primary: "#A30000",      // Rouge principal (Bite)
+          dark: "#8B0000",         // Rouge foncé (header)
           light: "#DC2626",        // Rouge clair pour les boutons
-          accent: "#FCD34D",       // Jaune pour les promotions
+          accent: "#FFC107",       // Jaune pour les badges
+          gradient: {
+            start: "#FFA800",      // Début du dégradé orange-jaune
+            end: "#FFC107",        // Fin du dégradé orange-jaune
+          },
           white: "#FFFFFF",
+          text: {
+            dark: "#212121",       // Text Dark
+            light: "#757575",      // Text Light
+          },
           gray: {
-            50: "#F9FAFB",
-            100: "#F3F4F6",
-            200: "#E5E7EB",
-            300: "#D1D5DB",
-            600: "#4B5563",
-            700: "#374151",
-            800: "#1F2937",
-            900: "#111827",
+            light: "#F5F5F5",      // Light Gray
+            50: "#FAFAFA",
+            100: "#F5F5F5",
+            200: "#EEEEEE",
+            300: "#E0E0E0",
+            600: "#757575",
+            700: "#616161",
+            800: "#424242",
+            900: "#212121",
           },
         },
+      },
+      fontFamily: {
+        heading: ["Poppins", "Montserrat", "sans-serif"],
+        body: ["Poppins", "Roboto", "sans-serif"],
+        bold: ["Poppins", "Montserrat", "sans-serif"],
+      },
+      fontWeight: {
+        heading: "700",
+        body: "400",
+        medium: "500",
       },
     },
   },
   plugins: [],
 };
 export default config;
+
 
