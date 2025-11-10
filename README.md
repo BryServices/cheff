@@ -1,6 +1,13 @@
-# Chef - Plateforme de livraison de repas
+# Bite - Plateforme de livraison de repas
 
 Application de livraison de repas avec gestion multi-utilisateurs (Clients, Restaurateurs, Administrateurs).
+
+## Design
+
+L'application utilise un design moderne inspiré de l'application "Bite" avec :
+- **Couleurs principales** : Rouge foncé (#8B1E1E) et blanc
+- **Couleurs d'accent** : Jaune (#FCD34D) pour les promotions
+- **Style** : Design épuré et moderne avec des bordures arrondies et des ombres douces
 
 ## Technologies
 

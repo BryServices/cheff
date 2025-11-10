@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Chef - Plateforme de livraison de repas",
+  title: "Bite - Plateforme de livraison de repas",
   description: "Application de livraison de repas avec gestion multi-utilisateurs",
 };
 
