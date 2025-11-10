@@ -31,7 +31,7 @@ export default function AdminSettingsPage() {
             </label>
             <label className="flex items-center gap-2">
               <input type="checkbox" />
-              <span>Activer le droit à l'oubli</span>
+              <span>Activer le droit à l&apos;oubli</span>
             </label>
           </div>
         </div>

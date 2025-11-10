@@ -20,7 +20,7 @@ export default function AdminPaymentsPage() {
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-600 mb-2">
-            Transactions aujourd'hui
+            Transactions aujourd&apos;hui
           </h3>
           <p className="text-3xl font-bold text-blue-600">0</p>
         </div>
