@@ -19,7 +19,7 @@ export default function ProfilePage() {
           </div>
           <div className="flex gap-3">
             <button className="px-6 py-2 bg-bite-primary text-white rounded-lg hover:bg-bite-dark transition font-medium">
-              S'inscrire
+              S&apos;inscrire
             </button>
             <button className="px-6 py-2 border-2 border-bite-primary text-bite-primary rounded-lg hover:bg-bite-gray-50 transition font-medium">
               Se connecter
