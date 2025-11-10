@@ -1,6 +1,55 @@
-import Link from "next/link";
+'use client';
+
+import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import RestaurantCard from '../components/RestaurantCard';
+import { restaurants } from '../data/restaurants';
+import { RestaurantFilters } from '../types/restaurant';
+import { filterRestaurants } from '../utils/filterRestaurants';
+import { cuisineTypes } from '../data/restaurants';
 
 export default function ClientHome() {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCuisine, setSelectedCuisine] = useState('');
+
+  // Filtrer les restaurants promus pour la page d'accueil
+  const featuredRestaurants = useMemo(() => {
+    let filtered = restaurants.filter((r) => r.isPromoted || r.rating >= 4.5);
+    
+    // Appliquer la recherche si présente
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (r) =>
+          r.name.toLowerCase().includes(query) ||
+          r.dishes?.some((dish) => dish.toLowerCase().includes(query))
+      );
+    }
+
+    // Appliquer le filtre de cuisine si présent
+    if (selectedCuisine && selectedCuisine !== 'Tous') {
+      filtered = filtered.filter((r) => r.cuisineType === selectedCuisine);
+    }
+
+    return filtered.slice(0, 6); // Limiter à 6 restaurants sur la page d'accueil
+  }, [searchQuery, selectedCuisine]);
+
+  const handleSearch = () => {
+    if (searchQuery || selectedCuisine) {
+      const filters: RestaurantFilters = {
+        searchQuery,
+        cuisineType: selectedCuisine === 'Tous' ? '' : selectedCuisine,
+        department: '',
+        district: '',
+        minRating: 0,
+        priceRange: '',
+      };
+      // Rediriger vers la page restaurants avec les filtres
+      router.push('/client/restaurants');
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
       {/* En-tête avec localisation */}
@@ -14,7 +63,7 @@ export default function ClientHome() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>Localisation</span>
+            <span>Paris, France</span>
           </div>
         </div>
       </div>
@@ -40,12 +89,37 @@ export default function ClientHome() {
       {/* Barre de recherche */}
       <div className="mb-4 md:mb-6">
         <div className="flex gap-2 md:gap-3">
-          <input
-            type="text"
-            placeholder="Rechercher un restaurant ou un plat..."
-            className="flex-1 px-4 md:px-5 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark placeholder:text-bite-text-light"
-          />
-          <button className="px-6 md:px-8 py-3 bg-bite-primary text-white rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="Rechercher un restaurant ou un plat..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
+              className="w-full px-4 md:px-5 py-3 pl-12 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark placeholder:text-bite-text-light"
+            />
+            <svg
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-bite-text-light"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+          <button
+            onClick={handleSearch}
+            className="px-6 md:px-8 py-3 bg-bite-primary text-white rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite"
+          >
             Rechercher
           </button>
         </div>
@@ -54,11 +128,17 @@ export default function ClientHome() {
       {/* Catégories */}
       <div className="mb-4 md:mb-6 overflow-x-auto">
         <div className="flex gap-2 md:gap-3 pb-2">
-          {['Tous', 'Burgers', 'Pizza', 'Sushi', 'Italien', 'Asiatique'].map((cat, idx) => (
+          {cuisineTypes.slice(0, 6).map((cat) => (
             <button
               key={cat}
+              onClick={() => {
+                setSelectedCuisine(cat);
+                if (cat !== 'Tous') {
+                  router.push('/client/restaurants');
+                }
+              }}
               className={`px-4 md:px-6 py-2 rounded-full font-body font-medium whitespace-nowrap transition ${
-                idx === 0
+                selectedCuisine === cat || (cat === 'Tous' && !selectedCuisine)
                   ? 'bg-bite-primary text-white shadow-bite'
                   : 'bg-white text-bite-text-dark hover:bg-bite-gray-light border border-bite-gray-300'
               }`}
@@ -70,35 +150,57 @@ export default function ClientHome() {
       </div>
 
       {/* Liste des restaurants */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {[1, 2, 3, 4, 5, 6].map((i) => (
-          <Link
-            key={i}
-            href={`/client/restaurant/${i}`}
-            className="bg-white rounded-2xl shadow-bite hover:shadow-bite-lg transition-all transform hover:-translate-y-1 overflow-hidden border border-bite-gray-200"
+      {featuredRestaurants.length > 0 ? (
+        <>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl md:text-2xl font-heading text-bite-text-dark">
+              Restaurants populaires
+            </h2>
+            <a
+              href="/client/restaurants"
+              className="text-bite-primary hover:text-bite-dark transition font-body font-medium text-sm"
+            >
+              Voir tout →
+            </a>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {featuredRestaurants.map((restaurant) => (
+              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="bg-white rounded-2xl shadow-bite p-12 text-center border border-bite-gray-200">
+          <svg
+            className="w-16 h-16 mx-auto text-bite-gray-300 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <div className="h-40 md:h-48 bg-gradient-to-br from-bite-gray-200 to-bite-gray-300 relative">
-              <div className="absolute top-3 right-3 bg-bite-accent text-bite-dark px-3 py-1 rounded-full text-xs md:text-sm font-heading font-bold shadow-bite">
-                50% OFF
-              </div>
-            </div>
-            <div className="p-4">
-              <h3 className="text-lg md:text-xl font-heading text-bite-text-dark mb-1">Restaurant {i}</h3>
-              <p className="text-bite-text-light mb-3 text-sm font-body">Type de cuisine • Quartier</p>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center">
-                  <span className="text-bite-accent text-base md:text-lg">★★★★☆</span>
-                  <span className="text-bite-text-light text-xs md:text-sm ml-2 font-body">4.5</span>
-                </div>
-                <span className="text-bite-text-dark font-body font-medium">€€</span>
-              </div>
-              <button className="w-full bg-bite-primary text-white py-2.5 rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite">
-                Voir le menu
-              </button>
-            </div>
-          </Link>
-        ))}
-      </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <p className="text-bite-text-dark text-lg font-body mb-2">
+            Aucun restaurant trouvé
+          </p>
+          <p className="text-bite-text-light text-sm font-body mb-4">
+            Essayez de modifier vos critères de recherche
+          </p>
+          <button
+            onClick={() => {
+              setSearchQuery('');
+              setSelectedCuisine('');
+            }}
+            className="px-6 py-2 bg-bite-primary text-white rounded-xl hover:bg-bite-dark transition font-heading font-bold"
+          >
+            Réinitialiser
+          </button>
+        </div>
+      )}
     </div>
   );
 }
