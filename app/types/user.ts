@@ -30,6 +30,7 @@ export interface User {
   preferences: UserPreferences;
   createdAt: Date;
   isVerified: boolean;
+  orders?: string[]; // IDs des commandes de l'utilisateur
 }
 
 export interface AuthState {

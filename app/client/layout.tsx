@@ -15,13 +15,16 @@ export default function ClientLayout({
   const router = useRouter();
 
   // Pages qui nécessitent une authentification
-  const protectedRoutes = ['/client/cart', '/client/checkout', '/client/orders', '/client/profile'];
+  // Note: /client/checkout est accessible sans auth, mais /client/checkout/confirm nécessite auth
+  const protectedRoutes = ['/client/cart', '/client/checkout/confirm', '/client/orders', '/client/profile'];
   const requiresAuth = protectedRoutes.some(route => pathname?.startsWith(route));
 
   // Rediriger vers la page de connexion uniquement pour les pages protégées
   useEffect(() => {
     if (!isLoading && !isAuthenticated && requiresAuth && !pathname?.startsWith('/client/auth')) {
-      router.push('/client/auth/login');
+      // Ajouter l'URL de retour pour revenir à la page après connexion
+      const returnUrl = encodeURIComponent(pathname || '/client');
+      router.push(`/client/auth/login?returnUrl=${returnUrl}`);
     }
   }, [isAuthenticated, isLoading, pathname, router, requiresAuth]);
 

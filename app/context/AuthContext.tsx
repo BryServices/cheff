@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (phone: string, code: string) => Promise<void>;
+  login: (phone: string, code: string, autoCreateProfile?: boolean) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
   sendVerificationCode: (phone: string) => Promise<void>;
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
-  const login = async (phone: string, code: string): Promise<void> => {
+  const login = async (phone: string, code: string, autoCreateProfile: boolean = false): Promise<void> => {
     setIsLoading(true);
     try {
       const isValid = await verifyCode(phone, code);
@@ -99,6 +99,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(userData);
           return;
         }
+      }
+
+      // Si autoCreateProfile est activé et l'utilisateur n'existe pas, créer un profil automatiquement
+      if (autoCreateProfile) {
+        const newUser: User = {
+          id: `user_${Date.now()}`,
+          firstName: phone.slice(-4), // Utiliser les 4 derniers chiffres comme nom par défaut
+          lastName: '',
+          phone: phone,
+          addresses: [],
+          preferences: {
+            favoriteCuisines: [],
+            dietaryRestrictions: [],
+            allergies: [],
+            language: 'fr',
+            notifications: {
+              sms: true,
+              email: false,
+              push: true,
+            },
+          },
+          createdAt: new Date(),
+          isVerified: true,
+          orders: [], // Initialiser le tableau des commandes
+        };
+
+        localStorage.setItem('cheff_user', JSON.stringify(newUser));
+        setUser(newUser);
+        return;
       }
 
       throw new Error('Utilisateur non trouvé. Veuillez vous inscrire.');

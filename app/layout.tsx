@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthProvider from "./components/AuthProvider";
+import RestaurantAuthProvider from "./components/RestaurantAuthProvider";
 
 export const metadata: Metadata = {
   title: "CHEFF - Plateforme de livraison de repas",
@@ -15,7 +16,11 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <RestaurantAuthProvider>
+            {children}
+          </RestaurantAuthProvider>
+        </AuthProvider>
       </body>
     </html>
   );

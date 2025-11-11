@@ -2,17 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useAuth } from '@/app/context/AuthContext';
+import { useRestaurantAuth } from '@/app/context/RestaurantAuthContext';
 
-export default function LoginPage() {
+export default function RestoLoginPage() {
   const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { sendVerificationCode, login } = useAuth();
+  const { sendVerificationCode, login } = useRestaurantAuth();
 
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +19,6 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Valider le format du téléphone
       const phoneRegex = /^(\+242|00242)?[0-9]{9}$/;
       const cleanPhone = phone.replace(/\s/g, '');
       
@@ -44,20 +42,8 @@ export default function LoginPage() {
 
     try {
       const cleanPhone = phone.replace(/\s/g, '');
-      // Vérifier s'il y a une URL de retour dans les paramètres
-      const searchParams = new URLSearchParams(window.location.search);
-      const returnUrl = searchParams.get('returnUrl');
-      
-      // Si on vient de la page de confirmation, créer automatiquement le profil
-      const autoCreate = returnUrl?.includes('/client/checkout/confirm');
-      await login(cleanPhone, code, autoCreate);
-      
-      // Rediriger vers l'URL de retour ou la page par défaut
-      if (returnUrl) {
-        router.push(returnUrl);
-      } else {
-        router.push('/client');
-      }
+      await login(cleanPhone, code);
+      router.push('/resto/dashboard');
     } catch (err: any) {
       setError(err.message || 'Code de vérification invalide');
     } finally {
@@ -66,7 +52,6 @@ export default function LoginPage() {
   };
 
   const formatPhone = (value: string) => {
-    // Formater le téléphone congolais
     const cleaned = value.replace(/\D/g, '');
     if (cleaned.startsWith('242')) {
       return `+242 ${cleaned.slice(3)}`;
@@ -81,7 +66,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-bite-gray-light flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-bite-lg p-6 md:p-8 border border-bite-gray-200">
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-heading text-bite-text-dark mb-2">CHEFF</h1>
+          <h1 className="text-3xl font-heading text-bite-text-dark mb-2">CHEFF Restaurateur</h1>
           <h2 className="text-2xl font-heading text-bite-text-dark mb-2">
             {step === 'phone' ? 'Connexion' : 'Vérification'}
           </h2>
@@ -143,6 +128,9 @@ export default function LoginPage() {
               <p className="mt-2 text-sm text-bite-text-light font-body text-center">
                 Code envoyé au {phone}
               </p>
+              <p className="mt-1 text-xs text-bite-text-light font-body text-center">
+                Code de démo: 123456
+              </p>
             </div>
 
             <button
@@ -187,17 +175,9 @@ export default function LoginPage() {
             </button>
           </form>
         )}
-
-        <div className="mt-6 text-center">
-          <p className="text-bite-text-light font-body text-sm">
-            Pas encore de compte ?{' '}
-            <Link href="/client/auth/register" className="text-bite-primary hover:text-bite-dark font-medium">
-              S&apos;inscrire
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   );
 }
+
 
