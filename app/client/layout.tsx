@@ -1,10 +1,42 @@
+'use client';
+
 import Link from "next/link";
+import { useAuth } from "../../context/AuthContext";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isAuthenticated, isLoading } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
+  // (sauf pour les pages d'authentification)
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && !pathname?.startsWith('/client/auth')) {
+      router.push('/client/auth/login');
+    }
+  }, [isAuthenticated, isLoading, pathname, router]);
+
+  // Ne pas afficher le layout si on est sur les pages d'authentification
+  if (pathname?.startsWith('/client/auth')) {
+    return <>{children}</>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-bite-gray-light flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-bite-primary mx-auto"></div>
+          <p className="mt-4 text-bite-text-light font-body">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-bite-gray-light">
       {/* Header avec style Bite */}
