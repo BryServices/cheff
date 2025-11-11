@@ -292,7 +292,7 @@ export default function ProfilePage() {
                   type="text"
                   value={newAddress.street}
                   onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
-                  placeholder="Avenue de l'Indépendance"
+                  placeholder="Avenue de l&apos;Indépendance"
                   className="w-full px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
                 />
               </div>

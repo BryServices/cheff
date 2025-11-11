@@ -276,7 +276,7 @@ export default function RegisterPage() {
           <form onSubmit={handleAddressSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
-                Libellé de l'adresse (optionnel)
+                Libellé de l&apos;adresse (optionnel)
               </label>
               <input
                 type="text"
@@ -294,7 +294,7 @@ export default function RegisterPage() {
                 type="text"
                 value={address.street}
                 onChange={(e) => setAddress({ ...address, street: e.target.value })}
-                placeholder="Avenue de l'Indépendance"
+                placeholder="Avenue de l&apos;Indépendance"
                 className="w-full px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
                 required
               />
