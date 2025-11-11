@@ -150,9 +150,16 @@ export default function DriverPage() {
       <div className="min-h-screen bg-bite-gray-light flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-bite-lg p-8 border border-bite-gray-200">
           <div className="text-center mb-6">
-            <h1 className="text-3xl font-heading text-bite-text-dark mb-2">
-              CHEFF Livreur
-            </h1>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <img 
+                src="/icone.png" 
+                alt="CHEFF" 
+                className="w-12 h-12 object-contain"
+              />
+              <h1 className="text-3xl font-heading text-bite-text-dark">
+                CHEFF Livreur
+              </h1>
+            </div>
             <p className="text-bite-text-light font-body">
               Connectez-vous pour accéder à votre interface
             </p>
@@ -243,7 +250,12 @@ export default function DriverPage() {
       <nav className="bg-bite-dark shadow-bite-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
+              <img 
+                src="/icone.png" 
+                alt="CHEFF" 
+                className="w-8 h-8 object-contain"
+              />
               <h1 className="text-2xl font-heading text-white tracking-tight">
                 CHEFF Livreur
               </h1>

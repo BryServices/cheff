@@ -56,8 +56,15 @@ export default function ClientLayout({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <Link href="/client" className="text-3xl font-heading text-white tracking-tight hover:opacity-90 transition">
-                CHEFF
+              <Link href="/client" className="flex items-center gap-2 hover:opacity-90 transition">
+                <img 
+                  src="/icone.png" 
+                  alt="CHEFF" 
+                  className="w-8 h-8 object-contain"
+                />
+                <span className="text-3xl font-heading text-white tracking-tight">
+                  CHEFF
+                </span>
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-6">

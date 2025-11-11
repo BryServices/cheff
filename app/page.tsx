@@ -4,11 +4,18 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-bite-dark">
       <div className="text-center space-y-8 p-8 w-full max-w-5xl">
-        {/* Logo Bite style */}
+        {/* Logo avec icône */}
         <div className="mb-8">
-          <h1 className="text-7xl font-heading text-white mb-2 tracking-tight">
-            CHEFF
-          </h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img 
+              src="/icone.png" 
+              alt="CHEFF Logo" 
+              className="w-20 h-20 md:w-24 md:h-24 object-contain"
+            />
+            <h1 className="text-5xl md:text-7xl font-heading text-white tracking-tight">
+              CHEFF
+            </h1>
+          </div>
           <div className="w-24 h-1 bg-white mx-auto opacity-80"></div>
         </div>
         

@@ -11,8 +11,15 @@ export default function AdminLayout({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Link href="/admin" className="text-2xl font-heading text-white tracking-tight hover:opacity-90 transition">
-                CHEFF Admin
+              <Link href="/admin" className="flex items-center gap-2 hover:opacity-90 transition">
+                <img 
+                  src="/icone.png" 
+                  alt="CHEFF" 
+                  className="w-8 h-8 object-contain"
+                />
+                <span className="text-2xl font-heading text-white tracking-tight">
+                  CHEFF Admin
+                </span>
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-6">
