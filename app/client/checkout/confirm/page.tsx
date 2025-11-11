@@ -131,7 +131,7 @@ export default function ConfirmPaymentPage() {
             Aucune commande en attente
           </h1>
           <p className="text-bite-text-light font-body mb-6">
-            Il n'y a pas de commande en attente de confirmation.
+            Il n&apos;y a pas de commande en attente de confirmation.
           </p>
           <button
             onClick={() => router.push('/client/checkout')}
