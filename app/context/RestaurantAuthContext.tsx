@@ -3,6 +3,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { RestaurantOwner } from '@/app/types/restaurant-owner';
 
+interface RestaurantCredentials {
+  restaurantCode: string;
+  password: string;
+  restaurantId: number;
+  ownerName: string;
+}
+
 interface RestaurantAuthContextType {
   owner: RestaurantOwner | null;
   isAuthenticated: boolean;
@@ -13,11 +20,48 @@ interface RestaurantAuthContextType {
 
 const RestaurantAuthContext = createContext<RestaurantAuthContextType | undefined>(undefined);
 
+// Données des restaurants enregistrés par le Super Admin
+// En production, cela viendrait d'une base de données
+const registeredRestaurants: RestaurantCredentials[] = [
+  {
+    restaurantCode: 'REST001',
+    password: 'password123',
+    restaurantId: 1,
+    ownerName: 'Le Congolais',
+  },
+  {
+    restaurantCode: 'REST002',
+    password: 'password123',
+    restaurantId: 2,
+    ownerName: 'Pizza Brazza',
+  },
+  {
+    restaurantCode: 'REST003',
+    password: 'password123',
+    restaurantId: 3,
+    ownerName: 'Burger King Brazza',
+  },
+  {
+    restaurantCode: 'REST004',
+    password: 'password123',
+    restaurantId: 4,
+    ownerName: 'Sushi Brazza',
+  },
+];
+
 export function RestaurantAuthProvider({ children }: { children: ReactNode }) {
   const [owner, setOwner] = useState<RestaurantOwner | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Initialiser les restaurants dans localStorage si nécessaire
+    if (typeof window !== 'undefined') {
+      const storedRestaurants = localStorage.getItem('cheff_registered_restaurants');
+      if (!storedRestaurants) {
+        localStorage.setItem('cheff_registered_restaurants', JSON.stringify(registeredRestaurants));
+      }
+    }
+
     // Vérifier si le restaurateur est connecté au chargement
     const storedOwner = localStorage.getItem('cheff_restaurant_owner');
     if (storedOwner) {
@@ -36,73 +80,62 @@ export function RestaurantAuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const sendVerificationCode = async (phone: string): Promise<void> => {
-    // Simulation d'envoi de code SMS
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const code = '123456'; // Code de démo
-        localStorage.setItem('cheff_restaurant_verification_code', code);
-        localStorage.setItem('cheff_restaurant_verification_phone', phone);
-        console.log(`Code de vérification pour ${phone}: ${code}`);
-        resolve();
-      }, 1000);
-    });
-  };
-
-  const verifyCode = async (phone: string, code: string): Promise<boolean> => {
-    const storedCode = localStorage.getItem('cheff_restaurant_verification_code');
-    const storedPhone = localStorage.getItem('cheff_restaurant_verification_phone');
-    
-    if (storedCode === code && storedPhone === phone) {
-      localStorage.removeItem('cheff_restaurant_verification_code');
-      localStorage.removeItem('cheff_restaurant_verification_phone');
-      return true;
-    }
-    
-    // Pour la démo, accepter aussi le code "123456"
-    if (code === '123456' && storedPhone === phone) {
-      localStorage.removeItem('cheff_restaurant_verification_code');
-      localStorage.removeItem('cheff_restaurant_verification_phone');
-      return true;
-    }
-    
-    return false;
-  };
-
-  const login = async (phone: string, code: string): Promise<void> => {
+  const login = async (restaurantCode: string, password: string): Promise<void> => {
     setIsLoading(true);
     try {
-      const isValid = await verifyCode(phone, code);
-      if (!isValid) {
-        throw new Error('Code de vérification invalide');
+      // Récupérer les restaurants enregistrés
+      const storedRestaurants = localStorage.getItem('cheff_registered_restaurants');
+      const restaurants: RestaurantCredentials[] = storedRestaurants 
+        ? JSON.parse(storedRestaurants)
+        : registeredRestaurants;
+
+      // Vérifier les identifiants
+      const restaurant = restaurants.find(
+        (r) => r.restaurantCode === restaurantCode.toUpperCase() && r.password === password
+      );
+
+      if (!restaurant) {
+        throw new Error('Code restaurant ou mot de passe incorrect');
       }
 
-      // Récupérer ou créer le restaurateur
-      const storedOwner = localStorage.getItem('cheff_restaurant_owner');
-      if (storedOwner) {
-        const ownerData = JSON.parse(storedOwner);
-        if (ownerData.phone === phone) {
+      // Créer ou récupérer le restaurateur
+      const existingOwner = localStorage.getItem('cheff_restaurant_owner');
+      let ownerData: RestaurantOwner;
+
+      if (existingOwner) {
+        const parsed = JSON.parse(existingOwner);
+        if (parsed.restaurantId === restaurant.restaurantId) {
+          ownerData = parsed;
           if (ownerData.createdAt) {
             ownerData.createdAt = new Date(ownerData.createdAt);
           }
-          setOwner(ownerData);
-          return;
+        } else {
+          // Créer un nouveau owner pour ce restaurant
+          ownerData = {
+            id: `owner_${Date.now()}`,
+            firstName: restaurant.ownerName.split(' ')[0] || 'Restaurateur',
+            lastName: restaurant.ownerName.split(' ').slice(1).join(' ') || 'CHEFF',
+            phone: '',
+            restaurantId: restaurant.restaurantId,
+            isVerified: true,
+            createdAt: new Date(),
+          };
         }
+      } else {
+        // Créer un nouveau owner
+        ownerData = {
+          id: `owner_${Date.now()}`,
+          firstName: restaurant.ownerName.split(' ')[0] || 'Restaurateur',
+          lastName: restaurant.ownerName.split(' ').slice(1).join(' ') || 'CHEFF',
+          phone: '',
+          restaurantId: restaurant.restaurantId,
+          isVerified: true,
+          createdAt: new Date(),
+        };
       }
 
-      // Créer un nouveau restaurateur pour la démo
-      const newOwner: RestaurantOwner = {
-        id: `owner_${Date.now()}`,
-        firstName: 'Restaurateur',
-        lastName: 'CHEFF',
-        phone: phone.replace(/\s/g, ''),
-        restaurantId: 1,
-        isVerified: true,
-        createdAt: new Date(),
-      };
-
-      localStorage.setItem('cheff_restaurant_owner', JSON.stringify(newOwner));
-      setOwner(newOwner);
+      localStorage.setItem('cheff_restaurant_owner', JSON.stringify(ownerData));
+      setOwner(ownerData);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -124,8 +157,6 @@ export function RestaurantAuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         logout,
-        sendVerificationCode,
-        verifyCode,
       }}
     >
       {children}
@@ -140,5 +171,3 @@ export function useRestaurantAuth() {
   }
   return context;
 }
-
-

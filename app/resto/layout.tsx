@@ -15,20 +15,16 @@ export default function RestoLayout({
   const router = useRouter();
 
   // Pages qui nécessitent une authentification
-  const protectedRoutes = ['/resto/dashboard', '/resto/menu', '/resto/orders', '/resto/schedule', '/resto/stats', '/resto/settings'];
+  // Note: /resto/dashboard a l'authentification intégrée, les autres pages nécessitent l'auth
+  const protectedRoutes = ['/resto/menu', '/resto/orders', '/resto/schedule', '/resto/stats', '/resto/settings'];
   const requiresAuth = protectedRoutes.some(route => pathname?.startsWith(route));
 
-  // Rediriger vers la page de connexion si nécessaire
+  // Rediriger vers le dashboard (qui a l'auth intégrée) si nécessaire
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && requiresAuth && !pathname?.startsWith('/resto/auth')) {
-      router.push('/resto/auth/login');
+    if (!isLoading && !isAuthenticated && requiresAuth) {
+      router.push('/resto/dashboard');
     }
   }, [isAuthenticated, isLoading, pathname, router, requiresAuth]);
-
-  // Ne pas afficher le layout si on est sur les pages d'authentification
-  if (pathname?.startsWith('/resto/auth')) {
-    return <>{children}</>;
-  }
 
   if (isLoading && requiresAuth) {
     return (

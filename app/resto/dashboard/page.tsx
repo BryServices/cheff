@@ -8,9 +8,15 @@ import { Order } from '@/app/types/order';
 import OrderCard from '@/app/components/OrderCard';
 
 export default function RestoDashboard() {
-  const { owner, isAuthenticated } = useRestaurantAuth();
+  const { owner, isAuthenticated, isLoading, login, logout } = useRestaurantAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  
+  // États pour l'authentification
+  const [restaurantCode, setRestaurantCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
 
   // Charger les commandes
   useEffect(() => {
@@ -89,26 +95,133 @@ export default function RestoDashboard() {
     setRefreshKey(prev => prev + 1);
   };
 
-  if (!isAuthenticated || !owner) {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setIsAuthLoading(true);
+
+    try {
+      if (!restaurantCode.trim() || !password.trim()) {
+        throw new Error('Veuillez remplir tous les champs');
+      }
+
+      await login(restaurantCode.trim(), password);
+      // Réinitialiser le formulaire après connexion réussie
+      setRestaurantCode('');
+      setPassword('');
+    } catch (err: any) {
+      setAuthError(err.message || 'Erreur lors de la connexion');
+    } finally {
+      setIsAuthLoading(false);
+    }
+  };
+
+  if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
-        <div className="bg-white rounded-2xl shadow-bite p-12 text-center border border-bite-gray-200">
-          <p className="text-bite-text-dark text-lg font-body mb-4">
-            Veuillez vous connecter pour accéder au tableau de bord
-          </p>
+      <div className="min-h-screen bg-bite-gray-light flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-bite-primary mx-auto"></div>
+          <p className="mt-4 text-bite-text-light font-body">Chargement...</p>
         </div>
       </div>
     );
   }
 
+  // Si l'utilisateur n'est pas connecté, afficher le formulaire de connexion
+  if (!isAuthenticated || !owner) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white rounded-2xl shadow-bite-lg p-6 md:p-8 border border-bite-gray-200">
+            <div className="text-center mb-6">
+              <h1 className="text-3xl font-heading text-bite-text-dark mb-2">CHEFF Restaurateur</h1>
+              <h2 className="text-2xl font-heading text-bite-text-dark mb-2">Connexion</h2>
+              <p className="text-bite-text-light font-body">
+                Connectez-vous pour accéder à votre tableau de bord
+              </p>
+            </div>
+
+            {authError && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-sm font-body">
+                {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                  Code Restaurant
+                </label>
+                <input
+                  type="text"
+                  value={restaurantCode}
+                  onChange={(e) => setRestaurantCode(e.target.value.toUpperCase())}
+                  placeholder="REST001"
+                  className="w-full px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark placeholder:text-bite-text-light uppercase"
+                  required
+                />
+                <p className="mt-1 text-xs text-bite-text-light font-body">
+                  Code unique attribué par le Super Admin
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                  Mot de passe
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark placeholder:text-bite-text-light"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isAuthLoading}
+                className="w-full bg-bite-primary text-white py-3 rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isAuthLoading ? 'Connexion...' : 'Se connecter'}
+              </button>
+            </form>
+
+            <div className="mt-6 p-4 bg-bite-gray-light rounded-xl">
+              <p className="text-xs text-bite-text-light font-body mb-2">
+                <strong>Codes de démonstration :</strong>
+              </p>
+              <ul className="text-xs text-bite-text-light font-body space-y-1">
+                <li>REST001 - password123</li>
+                <li>REST002 - password123</li>
+                <li>REST003 - password123</li>
+                <li>REST004 - password123</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si l'utilisateur est connecté, afficher le dashboard
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
       <div className="mb-4 md:mb-6 flex items-center justify-between">
         <h1 className="text-2xl md:text-3xl font-heading text-bite-text-dark">
           Tableau de bord
         </h1>
-        <div className="text-sm text-bite-text-light font-body">
-          Bienvenue, {owner.firstName} {owner.lastName}
+        <div className="flex items-center gap-4">
+          <div className="text-sm text-bite-text-light font-body">
+            Bienvenue, {owner.firstName} {owner.lastName}
+          </div>
+          <button
+            onClick={logout}
+            className="px-4 py-2 border-2 border-red-500 text-red-500 rounded-xl hover:bg-red-50 transition font-heading font-bold text-sm"
+          >
+            Déconnexion
+          </button>
         </div>
       </div>
       
