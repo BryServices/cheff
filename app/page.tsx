@@ -16,7 +16,7 @@ export default function Home() {
           Plateforme de livraison de repas
         </p>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link 
             href="/client"
             className="bg-white p-8 rounded-2xl shadow-bite-lg hover:shadow-bite transition-all transform hover:-translate-y-2 hover:scale-105"
@@ -40,6 +40,19 @@ export default function Home() {
             </h2>
             <p className="text-bite-gray-text-light font-body">
               Gérez votre menu, vos commandes et vos statistiques
+            </p>
+          </Link>
+
+          <Link 
+            href="/driver"
+            className="bg-white p-8 rounded-2xl shadow-bite-lg hover:shadow-bite transition-all transform hover:-translate-y-2 hover:scale-105"
+          >
+            <div className="text-5xl mb-4">🛵</div>
+            <h2 className="text-2xl font-heading text-bite-primary mb-3">
+              Livreur
+            </h2>
+            <p className="text-bite-gray-text-light font-body">
+              Recevez des missions, livrez les commandes et confirmez les livraisons
             </p>
           </Link>
 
