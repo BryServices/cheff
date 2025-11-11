@@ -304,7 +304,7 @@ export default function AdminDriversPage() {
 
               <div>
                 <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
-                  Plaque d'immatriculation
+                  Plaque d&apos;immatriculation
                 </label>
                 <input
                   type="text"

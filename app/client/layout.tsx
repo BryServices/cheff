@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/app/context/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -57,9 +58,11 @@ export default function ClientLayout({
                 </svg>
               </button>
               <Link href="/client" className="flex items-center gap-2 hover:opacity-90 transition">
-                <img 
+                <Image 
                   src="/icone.png" 
                   alt="CHEFF" 
+                  width={32}
+                  height={32}
                   className="w-8 h-8 object-contain"
                 />
                 <span className="text-3xl font-heading text-white tracking-tight">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -12,9 +13,11 @@ export default function AdminLayout({
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/admin" className="flex items-center gap-2 hover:opacity-90 transition">
-                <img 
+                <Image 
                   src="/icone.png" 
                   alt="CHEFF" 
+                  width={32}
+                  height={32}
                   className="w-8 h-8 object-contain"
                 />
                 <span className="text-2xl font-heading text-white tracking-tight">

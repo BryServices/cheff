@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useDriverAuth } from '@/app/context/DriverAuthContext';
 import { getAllOrders } from '@/app/data/orders';
 import { updateDriverStatus } from '@/app/data/drivers';
@@ -151,9 +152,11 @@ export default function DriverPage() {
         <div className="max-w-md w-full bg-white rounded-2xl shadow-bite-lg p-8 border border-bite-gray-200">
           <div className="text-center mb-6">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <img 
+              <Image 
                 src="/icone.png" 
                 alt="CHEFF" 
+                width={48}
+                height={48}
                 className="w-12 h-12 object-contain"
               />
               <h1 className="text-3xl font-heading text-bite-text-dark">
@@ -251,9 +254,11 @@ export default function DriverPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <img 
+              <Image 
                 src="/icone.png" 
                 alt="CHEFF" 
+                width={32}
+                height={32}
                 className="w-8 h-8 object-contain"
               />
               <h1 className="text-2xl font-heading text-white tracking-tight">

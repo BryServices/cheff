@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -7,9 +8,11 @@ export default function Home() {
         {/* Logo avec icône */}
         <div className="mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <img 
+            <Image 
               src="/icone.png" 
               alt="CHEFF Logo" 
+              width={96}
+              height={96}
               className="w-20 h-20 md:w-24 md:h-24 object-contain"
             />
             <h1 className="text-5xl md:text-7xl font-heading text-white tracking-tight">
