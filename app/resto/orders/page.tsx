@@ -11,7 +11,6 @@ export default function RestoOrdersPage() {
   const { owner, isAuthenticated, isLoading: authLoading } = useRestaurantAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
   const [dateFilter, setDateFilter] = useState<string>('');
 
   // Charger les commandes
@@ -48,18 +47,21 @@ export default function RestoOrdersPage() {
     }
   }, [owner, isAuthenticated, refreshKey]);
 
-  // Filtrer les commandes
-  const filteredOrders = useMemo(() => {
-    if (!owner) return [];
+  // Organiser les commandes par statut
+  const ordersByStatus = useMemo(() => {
+    if (!owner) return {
+      pending: [],
+      confirmed: [],
+      preparing: [],
+      ready: [],
+      out_for_delivery: [],
+      delivered: [],
+      cancelled: [],
+    };
     
     let filtered = orders.filter(order => order.restaurantId === owner.restaurantId);
     
-    // Filtrer par statut
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(order => order.status === statusFilter);
-    }
-    
-    // Filtrer par date
+    // Filtrer par date si nécessaire
     if (dateFilter) {
       const filterDate = new Date(dateFilter);
       filterDate.setHours(0, 0, 0, 0);
@@ -71,8 +73,22 @@ export default function RestoOrdersPage() {
     }
     
     // Trier par date (plus récentes en premier)
-    return filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-  }, [orders, owner, statusFilter, dateFilter]);
+    const sorted = filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    return {
+      pending: sorted.filter(o => o.status === 'pending'),
+      confirmed: sorted.filter(o => o.status === 'confirmed'),
+      preparing: sorted.filter(o => o.status === 'preparing'),
+      ready: sorted.filter(o => o.status === 'ready'),
+      out_for_delivery: sorted.filter(o => o.status === 'out_for_delivery'),
+      delivered: sorted.filter(o => o.status === 'delivered'),
+      cancelled: sorted.filter(o => o.status === 'cancelled'),
+    };
+  }, [orders, owner, dateFilter]);
+
+  const totalOrders = useMemo(() => {
+    return Object.values(ordersByStatus).reduce((sum, arr) => sum + arr.length, 0);
+  }, [ordersByStatus]);
 
   const handleOrderUpdate = () => {
     // Recharger les commandes
@@ -90,6 +106,32 @@ export default function RestoOrdersPage() {
       }
     }
     setRefreshKey(prev => prev + 1);
+  };
+
+  const renderOrderSection = (title: string, status: OrderStatus, ordersList: Order[]) => {
+    if (ordersList.length === 0) return null;
+
+    return (
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl md:text-2xl font-heading text-bite-text-dark">
+            {title}
+          </h2>
+          <span className="px-3 py-1 bg-bite-primary text-white text-xs font-heading font-bold rounded-full">
+            {ordersList.length}
+          </span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          {ordersList.map((order) => (
+            <OrderCard 
+              key={order.id} 
+              order={order} 
+              onStatusUpdate={handleOrderUpdate}
+            />
+          ))}
+        </div>
+      </div>
+    );
   };
 
   if (authLoading) {
@@ -122,38 +164,21 @@ export default function RestoOrdersPage() {
           Gestion des Commandes
         </h1>
         <p className="text-bite-text-light font-body">
-          {filteredOrders.length} commande{filteredOrders.length > 1 ? 's' : ''} trouvée{filteredOrders.length > 1 ? 's' : ''}
+          {totalOrders} commande{totalOrders > 1 ? 's' : ''} au total
         </p>
       </div>
       
-      {/* Filtres */}
+      {/* Filtre par date */}
       <div className="mb-6 flex flex-col sm:flex-row gap-4">
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as OrderStatus | 'all')}
-          className="px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark bg-white"
-        >
-          <option value="all">Tous les statuts</option>
-          <option value="pending">En attente</option>
-          <option value="confirmed">Confirmée</option>
-          <option value="preparing">En préparation</option>
-          <option value="ready">Prête</option>
-          <option value="out_for_delivery">En cours de livraison</option>
-          <option value="delivered">Livrée</option>
-          <option value="cancelled">Annulée</option>
-        </select>
         <input
           type="date"
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
           className="px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark bg-white"
         />
-        {(statusFilter !== 'all' || dateFilter) && (
+        {dateFilter && (
           <button
-            onClick={() => {
-              setStatusFilter('all');
-              setDateFilter('');
-            }}
+            onClick={() => setDateFilter('')}
             className="px-4 py-3 border-2 border-bite-gray-300 text-bite-text-dark rounded-xl hover:bg-bite-gray-light transition font-body font-medium"
           >
             Réinitialiser
@@ -161,16 +186,18 @@ export default function RestoOrdersPage() {
         )}
       </div>
       
-      {/* Liste des commandes - Optimisé pour laptop : 2 colonnes */}
-      {filteredOrders.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          {filteredOrders.map((order) => (
-            <OrderCard 
-              key={order.id} 
-              order={order} 
-              onStatusUpdate={handleOrderUpdate}
-            />
-          ))}
+      {/* Commandes organisées par statut */}
+      {totalOrders > 0 ? (
+        <div>
+          {renderOrderSection('En attente', 'pending', ordersByStatus.pending)}
+          {renderOrderSection('En préparation', 'preparing', ordersByStatus.preparing)}
+          {renderOrderSection('En livraison', 'out_for_delivery', ordersByStatus.out_for_delivery)}
+          {renderOrderSection('Livrée', 'delivered', ordersByStatus.delivered)}
+          
+          {/* Sections optionnelles pour les autres statuts */}
+          {ordersByStatus.confirmed.length > 0 && renderOrderSection('Confirmée', 'confirmed', ordersByStatus.confirmed)}
+          {ordersByStatus.ready.length > 0 && renderOrderSection('Prête', 'ready', ordersByStatus.ready)}
+          {ordersByStatus.cancelled.length > 0 && renderOrderSection('Annulée', 'cancelled', ordersByStatus.cancelled)}
         </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-bite p-12 text-center border border-bite-gray-200">
@@ -191,8 +218,8 @@ export default function RestoOrdersPage() {
             Aucune commande trouvée
           </p>
           <p className="text-bite-text-light font-body text-sm">
-            {statusFilter !== 'all' || dateFilter
-              ? 'Essayez de modifier les filtres'
+            {dateFilter
+              ? 'Essayez de modifier le filtre de date'
               : 'Les nouvelles commandes apparaîtront ici'}
           </p>
         </div>

@@ -5,7 +5,6 @@ import { useRestaurantAuth } from '@/app/context/RestaurantAuthContext';
 import { getAllOrders, getOrdersByRestaurant, mockOrders } from '@/app/data/orders';
 import { calculateRestaurantStats, formatCurrency } from '@/app/utils/restaurantStats';
 import { Order } from '@/app/types/order';
-import OrderCard from '@/app/components/OrderCard';
 
 export default function RestoDashboard() {
   const { owner, isAuthenticated, isLoading, login, logout } = useRestaurantAuth();
@@ -67,15 +66,6 @@ export default function RestoDashboard() {
     return calculateRestaurantStats(owner.restaurantId, orders);
   }, [owner, orders]);
 
-  // Obtenir les commandes récentes (10 dernières)
-  const recentOrders = useMemo(() => {
-    if (!owner) return [];
-    const restaurantOrders = orders.filter(order => order.restaurantId === owner.restaurantId);
-    return restaurantOrders
-      .filter(order => order.status !== 'delivered' && order.status !== 'cancelled')
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice(0, 10);
-  }, [owner, orders]);
 
   const handleOrderUpdate = () => {
     // Recharger les commandes
@@ -295,46 +285,6 @@ export default function RestoDashboard() {
         </div>
       </div>
       
-      {/* Commandes récentes */}
-      <div className="bg-white rounded-2xl shadow-bite p-4 md:p-6 border border-bite-gray-200">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-heading text-bite-text-dark">
-            Commandes récentes
-          </h2>
-          <span className="px-3 py-1 bg-bite-primary text-white text-xs font-heading font-bold rounded-full">
-            {recentOrders.length}
-          </span>
-        </div>
-
-        {recentOrders.length > 0 ? (
-          <div className="space-y-4">
-            {recentOrders.map((order) => (
-              <OrderCard 
-                key={order.id} 
-                order={order} 
-                onStatusUpdate={handleOrderUpdate}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <svg
-              className="w-16 h-16 mx-auto text-bite-gray-300 mb-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              />
-            </svg>
-            <p className="text-bite-text-light font-body">Aucune commande récente</p>
-          </div>
-        )}
-      </div>
     </div>
   );
 }

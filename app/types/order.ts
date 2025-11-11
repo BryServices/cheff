@@ -35,6 +35,8 @@ export interface Order {
   updatedAt: Date;
   estimatedDeliveryTime?: string; // Temps estimé de livraison
   notes?: string; // Notes du client
+  deliveryDriverId?: string; // ID du livreur assigné
+  deliveryCode?: string; // Code QR pour la confirmation de livraison
 }
 
 export interface RestaurantStats {
