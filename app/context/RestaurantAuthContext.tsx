@@ -7,10 +7,8 @@ interface RestaurantAuthContextType {
   owner: RestaurantOwner | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (phone: string, code: string) => Promise<void>;
+  login: (restaurantCode: string, password: string) => Promise<void>;
   logout: () => void;
-  sendVerificationCode: (phone: string) => Promise<void>;
-  verifyCode: (phone: string, code: string) => Promise<boolean>;
 }
 
 const RestaurantAuthContext = createContext<RestaurantAuthContextType | undefined>(undefined);
