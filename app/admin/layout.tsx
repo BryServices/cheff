@@ -25,6 +25,9 @@ export default function AdminLayout({
               <Link href="/admin/users" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Utilisateurs
               </Link>
+              <Link href="/admin/drivers" className="text-white hover:text-bite-accent transition font-body font-medium">
+                Livreurs
+              </Link>
               <Link href="/admin/payments" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Paiements
               </Link>

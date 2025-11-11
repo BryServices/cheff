@@ -1,39 +1,59 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useDriverAuth } from '@/app/context/DriverAuthContext';
 import { getAllOrders } from '@/app/data/orders';
-import { getAllDrivers, updateDriverStatus } from '@/app/data/drivers';
+import { updateDriverStatus } from '@/app/data/drivers';
 import { Order } from '@/app/types/order';
-import { DeliveryDriver } from '@/app/types/delivery';
 import { formatCurrency, getStatusLabel, getStatusColor } from '@/app/utils/restaurantStats';
 
 export default function DriverPage() {
-  const [driver, setDriver] = useState<DeliveryDriver | null>(null);
+  const { driver, isAuthenticated, isLoading: authLoading, activateDriver, login, logout } = useDriverAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [assignedOrder, setAssignedOrder] = useState<Order | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loginError, setLoginError] = useState('');
+  const [driverCode, setDriverCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
-    // Pour la démo, utiliser le premier livreur disponible
-    // En production, ce serait basé sur l'authentification
-    const drivers = getAllDrivers();
-    const demoDriver = drivers.find(d => d.id === 'driver_1') || drivers[0];
-    setDriver(demoDriver);
+    if (isAuthenticated && driver) {
+      // Charger les commandes
+      const allOrders = getAllOrders();
+      setOrders(allOrders);
 
-    // Charger les commandes
-    const allOrders = getAllOrders();
-    setOrders(allOrders);
-
-    // Trouver la commande assignée au livreur
-    if (demoDriver.currentOrderId) {
-      const order = allOrders.find(o => o.id === demoDriver.currentOrderId);
-      if (order) {
-        setAssignedOrder(order);
+      // Trouver la commande assignée au livreur
+      if (driver.currentOrderId) {
+        const order = allOrders.find(o => o.id === driver.currentOrderId);
+        if (order) {
+          setAssignedOrder(order);
+        }
       }
-    }
 
-    setIsLoading(false);
-  }, []);
+      setIsLoading(false);
+    } else {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated, driver]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    setIsLoggingIn(true);
+
+    try {
+      await login(driverCode, password);
+    } catch (error: any) {
+      setLoginError(error.message || 'Erreur de connexion');
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleActivate = () => {
+    activateDriver();
+  };
 
   const handleAcceptMission = (orderId: string) => {
     if (!driver) return;
@@ -57,7 +77,6 @@ export default function DriverPage() {
     const order = orders.find(o => o.id === orderId);
     if (order) {
       setAssignedOrder(order);
-      setDriver({ ...driver, status: 'picking_up', currentOrderId: orderId });
     }
   };
 
@@ -68,7 +87,6 @@ export default function DriverPage() {
     updateDriverStatus(driver.id, 'delivering', assignedOrder.id);
 
     // Mettre à jour le statut de la commande à "out_for_delivery"
-    // (Le restaurant a déjà finalisé et transmis les infos)
     const storedOrders = localStorage.getItem('cheff_orders');
     if (storedOrders) {
       const allOrders = JSON.parse(storedOrders);
@@ -83,8 +101,6 @@ export default function DriverPage() {
         setAssignedOrder(updatedOrder);
       }
     }
-
-    setDriver({ ...driver, status: 'delivering' });
   };
 
   const handleConfirmDelivery = () => {
@@ -104,7 +120,6 @@ export default function DriverPage() {
 
     // Remettre le livreur disponible
     updateDriverStatus(driver.id, 'available');
-    setDriver({ ...driver, status: 'available', currentOrderId: undefined });
     setAssignedOrder(null);
     
     // Afficher un message de succès
@@ -118,7 +133,7 @@ export default function DriverPage() {
     (order.status === 'ready' || order.status === 'out_for_delivery')
   );
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-bite-gray-light flex items-center justify-center">
         <div className="text-center">
@@ -129,18 +144,99 @@ export default function DriverPage() {
     );
   }
 
-  if (!driver) {
+  // Page de connexion
+  if (!isAuthenticated || !driver) {
     return (
-      <div className="min-h-screen bg-bite-gray-light flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-bite p-12 text-center border border-bite-gray-200">
-          <p className="text-bite-text-dark text-lg font-body">
-            Aucun livreur trouvé
-          </p>
+      <div className="min-h-screen bg-bite-gray-light flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-bite-lg p-8 border border-bite-gray-200">
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-heading text-bite-text-dark mb-2">
+              CHEFF Livreur
+            </h1>
+            <p className="text-bite-text-light font-body">
+              Connectez-vous pour accéder à votre interface
+            </p>
+          </div>
+
+          {loginError && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-sm font-body">
+              {loginError}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                Code Livreur
+              </label>
+              <input
+                type="text"
+                value={driverCode}
+                onChange={(e) => setDriverCode(e.target.value.toUpperCase())}
+                placeholder="DRV001"
+                className="w-full px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark uppercase"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                Mot de passe
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-4 py-3 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoggingIn}
+              className="w-full bg-bite-primary text-white py-3 rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite-lg disabled:opacity-50"
+            >
+              {isLoggingIn ? 'Connexion...' : 'Se connecter'}
+            </button>
+          </form>
         </div>
       </div>
     );
   }
 
+  // Page d'activation si le livreur n'est pas encore actif
+  if (!driver.isActive) {
+    return (
+      <div className="min-h-screen bg-bite-gray-light flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-bite-lg p-8 border border-bite-gray-200 text-center">
+          <div className="text-6xl mb-4">🛵</div>
+          <h1 className="text-2xl font-heading text-bite-text-dark mb-2">
+            Bienvenue, {driver.name} !
+          </h1>
+          <p className="text-bite-text-light font-body mb-6">
+            Activez votre compte pour commencer à recevoir des missions de livraison.
+            Une fois activé, vous apparaîtrez dans la liste des livreurs disponibles pour les restaurants.
+          </p>
+          <button
+            onClick={handleActivate}
+            className="w-full bg-bite-primary text-white py-3 rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite-lg mb-4"
+          >
+            Activer mon compte
+          </button>
+          <button
+            onClick={logout}
+            className="w-full text-bite-text-light hover:text-bite-primary transition font-body font-medium text-sm"
+          >
+            Se déconnecter
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Interface principale du livreur
   return (
     <div className="min-h-screen bg-bite-gray-light">
       {/* Header */}
@@ -159,8 +255,15 @@ export default function DriverPage() {
                   {driver.status === 'available' && '✓ Disponible'}
                   {driver.status === 'picking_up' && '🛵 En route pour récupération'}
                   {driver.status === 'delivering' && '📦 En livraison'}
+                  {driver.status === 'offline' && '⚫ Hors ligne'}
                 </p>
               </div>
+              <button
+                onClick={logout}
+                className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition font-body font-medium text-sm"
+              >
+                Déconnexion
+              </button>
             </div>
           </div>
         </div>
@@ -336,4 +439,3 @@ export default function DriverPage() {
     </div>
   );
 }
-

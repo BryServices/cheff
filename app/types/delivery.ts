@@ -6,6 +6,8 @@ export type DeliveryDriverStatus =
 
 export interface DeliveryDriver {
   id: string;
+  driverCode: string; // Code unique du livreur (ex: DRV001)
+  password: string; // Mot de passe pour la connexion
   name: string;
   phone: string;
   vehicleType: 'motorcycle' | 'bicycle' | 'car';
@@ -15,6 +17,7 @@ export interface DeliveryDriver {
   rating: number;
   totalDeliveries: number;
   isVerified: boolean;
+  isActive: boolean; // Si le livreur a activé son compte (connecté)
   createdAt: Date;
 }
 
