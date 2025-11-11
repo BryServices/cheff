@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '../../../context/AuthContext';
-import { Address, UserPreferences } from '../../../types/user';
-import { departments, districts } from '../../../data/restaurants';
+import { useAuth } from '@/app/context/AuthContext';
+import { Address, UserPreferences } from '@/app/types/user';
+import { departments, districts } from '@/app/data/restaurants';
 
 export default function RegisterPage() {
   const [step, setStep] = useState<'phone' | 'code' | 'info' | 'address' | 'preferences'>('phone');

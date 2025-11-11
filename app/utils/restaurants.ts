@@ -1,5 +1,5 @@
-import { Restaurant } from '../types/restaurant';
-import { restaurants } from '../data/restaurants';
+import { Restaurant } from '@/app/types/restaurant';
+import { restaurants } from '@/app/data/restaurants';
 
 export function getRestaurantById(id: number): Restaurant | undefined {
   return restaurants.find((restaurant) => restaurant.id === id);

@@ -1,4 +1,4 @@
-import { Restaurant, RestaurantFilters } from '../types/restaurant';
+import { Restaurant, RestaurantFilters } from '@/app/types/restaurant';
 
 export function filterRestaurants(
   restaurants: Restaurant[],

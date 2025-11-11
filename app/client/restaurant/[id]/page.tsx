@@ -1,4 +1,4 @@
-import { getRestaurantById } from '../../../utils/restaurants';
+import { getRestaurantById } from '@/app/utils/restaurants';
 import { notFound } from 'next/navigation';
 
 export default function RestaurantDetailPage({

@@ -2,11 +2,11 @@
 
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import RestaurantCard from '../components/RestaurantCard';
-import { restaurants } from '../data/restaurants';
-import { RestaurantFilters } from '../types/restaurant';
-import { filterRestaurants } from '../utils/filterRestaurants';
-import { cuisineTypes } from '../data/restaurants';
+import RestaurantCard from '@/app/components/RestaurantCard';
+import { restaurants } from '@/app/data/restaurants';
+import { RestaurantFilters } from '@/app/types/restaurant';
+import { filterRestaurants } from '@/app/utils/filterRestaurants';
+import { cuisineTypes } from '@/app/data/restaurants';
 
 export default function ClientHome() {
   const router = useRouter();

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import RestaurantCard from '../../components/RestaurantCard';
-import RestaurantFiltersComponent from '../../components/RestaurantFilters';
-import { restaurants } from '../../data/restaurants';
-import { RestaurantFilters } from '../../types/restaurant';
-import { filterRestaurants } from '../../utils/filterRestaurants';
+import RestaurantCard from '@/app/components/RestaurantCard';
+import RestaurantFiltersComponent from '@/app/components/RestaurantFilters';
+import { restaurants } from '@/app/data/restaurants';
+import { RestaurantFilters } from '@/app/types/restaurant';
+import { filterRestaurants } from '@/app/utils/filterRestaurants';
 
 export default function RestaurantsPage() {
   const [filters, setFilters] = useState<RestaurantFilters>({

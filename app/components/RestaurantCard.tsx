@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Restaurant } from '../types/restaurant';
+import { Restaurant } from '@/app/types/restaurant';
 
 interface RestaurantCardProps {
   restaurant: Restaurant;

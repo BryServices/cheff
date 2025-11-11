@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { RestaurantFilters } from '../types/restaurant';
-import { departments, districts, cuisineTypes, priceRanges } from '../data/restaurants';
+import { RestaurantFilters } from '@/app/types/restaurant';
+import { departments, districts, cuisineTypes, priceRanges } from '@/app/data/restaurants';
 
 interface RestaurantFiltersProps {
   filters: RestaurantFilters;
