@@ -1,4 +1,16 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuth } from '@/app/context/AuthContext';
+
 export default function CartPage() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  // Si l'utilisateur n'est pas authentifié, il sera redirigé par le layout
+  // Mais on peut aussi afficher un message si nécessaire
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
       <h1 className="text-2xl md:text-3xl font-heading text-bite-text-dark mb-4 md:mb-6">

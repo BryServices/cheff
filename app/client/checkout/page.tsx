@@ -1,4 +1,12 @@
+'use client';
+
+import { useAuth } from '@/app/context/AuthContext';
+
 export default function CheckoutPage() {
+  const { isAuthenticated, user } = useAuth();
+
+  // Si l'utilisateur n'est pas authentifié, il sera redirigé par le layout
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
       <h1 className="text-2xl md:text-3xl font-heading text-bite-text-dark mb-4 md:mb-6">

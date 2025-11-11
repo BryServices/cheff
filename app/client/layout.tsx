@@ -14,20 +14,23 @@ export default function ClientLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié
-  // (sauf pour les pages d'authentification)
+  // Pages qui nécessitent une authentification
+  const protectedRoutes = ['/client/cart', '/client/checkout', '/client/orders', '/client/profile'];
+  const requiresAuth = protectedRoutes.some(route => pathname?.startsWith(route));
+
+  // Rediriger vers la page de connexion uniquement pour les pages protégées
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && !pathname?.startsWith('/client/auth')) {
+    if (!isLoading && !isAuthenticated && requiresAuth && !pathname?.startsWith('/client/auth')) {
       router.push('/client/auth/login');
     }
-  }, [isAuthenticated, isLoading, pathname, router]);
+  }, [isAuthenticated, isLoading, pathname, router, requiresAuth]);
 
   // Ne pas afficher le layout si on est sur les pages d'authentification
   if (pathname?.startsWith('/client/auth')) {
     return <>{children}</>;
   }
 
-  if (isLoading) {
+  if (isLoading && requiresAuth) {
     return (
       <div className="min-h-screen bg-bite-gray-light flex items-center justify-center">
         <div className="text-center">
@@ -57,9 +60,6 @@ export default function ClientLayout({
             <div className="hidden md:flex items-center space-x-6">
               <Link href="/client" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Accueil
-              </Link>
-              <Link href="/client/restaurants" className="text-white hover:text-bite-accent transition font-body font-medium">
-                Restaurants
               </Link>
               <Link href="/client/cart" className="text-white hover:text-bite-accent transition font-body font-medium flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

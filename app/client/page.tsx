@@ -1,53 +1,49 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import RestaurantCard from '@/app/components/RestaurantCard';
 import { restaurants } from '@/app/data/restaurants';
 import { RestaurantFilters } from '@/app/types/restaurant';
 import { filterRestaurants } from '@/app/utils/filterRestaurants';
-import { cuisineTypes } from '@/app/data/restaurants';
+import { departments, districts, cuisineTypes, priceRanges } from '@/app/data/restaurants';
 
 export default function ClientHome() {
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCuisine, setSelectedCuisine] = useState('');
+  const [filters, setFilters] = useState<RestaurantFilters>({
+    searchQuery: '',
+    cuisineType: '',
+    department: '',
+    district: '',
+    minRating: 0,
+    priceRange: '',
+  });
+  
+  const [showFilters, setShowFilters] = useState(false);
 
-  // Filtrer les restaurants promus pour la page d'accueil
-  const featuredRestaurants = useMemo(() => {
-    let filtered = restaurants.filter((r) => r.isPromoted || r.rating >= 4.5);
-    
-    // Appliquer la recherche si présente
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (r) =>
-          r.name.toLowerCase().includes(query) ||
-          r.dishes?.some((dish) => dish.toLowerCase().includes(query))
-      );
-    }
+  const filteredRestaurants = useMemo(() => {
+    return filterRestaurants(restaurants, filters);
+  }, [filters]);
 
-    // Appliquer le filtre de cuisine si présent
-    if (selectedCuisine && selectedCuisine !== 'Tous') {
-      filtered = filtered.filter((r) => r.cuisineType === selectedCuisine);
-    }
+  const handleFilterChange = (key: keyof RestaurantFilters, value: string | number) => {
+    setFilters({
+      ...filters,
+      [key]: value,
+    });
+  };
 
-    return filtered.slice(0, 6); // Limiter à 6 restaurants sur la page d'accueil
-  }, [searchQuery, selectedCuisine]);
+  const handleSearchChange = (query: string) => {
+    setFilters((prev) => ({ ...prev, searchQuery: query }));
+  };
 
-  const handleSearch = () => {
-    if (searchQuery || selectedCuisine) {
-      const filters: RestaurantFilters = {
-        searchQuery,
-        cuisineType: selectedCuisine === 'Tous' ? '' : selectedCuisine,
-        department: '',
-        district: '',
-        minRating: 0,
-        priceRange: '',
-      };
-      // Rediriger vers la page restaurants avec les filtres
-      router.push('/client/restaurants');
-    }
+  const resetFilters = () => {
+    setFilters({
+      searchQuery: '',
+      cuisineType: '',
+      department: '',
+      district: '',
+      minRating: 0,
+      priceRange: '',
+    });
+    setShowFilters(false);
   };
 
   return (
@@ -68,7 +64,7 @@ export default function ClientHome() {
         </div>
       </div>
 
-      {/* Bannière promotionnelle style Bite avec dégradé orange-jaune */}
+      {/* Bannière promotionnelle */}
       <div className="mb-4 md:mb-6 relative overflow-hidden rounded-2xl h-40 md:h-48 bg-bite-gradient shadow-bite-lg">
         <div className="absolute inset-0 bg-bite-pattern opacity-20"></div>
         <div className="relative h-full flex items-center justify-between px-4 md:px-8">
@@ -86,20 +82,15 @@ export default function ClientHome() {
         </div>
       </div>
 
-      {/* Barre de recherche */}
+      {/* Barre de recherche et filtres */}
       <div className="mb-4 md:mb-6">
         <div className="flex gap-2 md:gap-3">
           <div className="flex-1 relative">
             <input
               type="text"
               placeholder="Rechercher un restaurant ou un plat..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSearch();
-                }
-              }}
+              value={filters.searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full px-4 md:px-5 py-3 pl-12 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark placeholder:text-bite-text-light"
             />
             <svg
@@ -117,65 +108,196 @@ export default function ClientHome() {
             </svg>
           </div>
           <button
-            onClick={handleSearch}
-            className="px-6 md:px-8 py-3 bg-bite-primary text-white rounded-xl hover:bg-bite-dark transition font-heading font-bold shadow-bite"
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-4 md:px-6 py-3 bg-white border-2 border-bite-gray-300 rounded-xl hover:bg-bite-gray-light transition font-body font-medium text-bite-text-dark flex items-center gap-2"
           >
-            Rechercher
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
+            <span className="hidden md:inline">Filtres</span>
           </button>
         </div>
       </div>
 
-      {/* Catégories */}
-      <div className="mb-4 md:mb-6 overflow-x-auto">
+      {/* Catégories rapides */}
+      <div className="mb-4 overflow-x-auto">
         <div className="flex gap-2 md:gap-3 pb-2">
-          {cuisineTypes.filter(cat => 
-            cat === 'Tous' || 
-            cat === 'Congolais' || 
-            cat === 'Burgers' || 
-            cat === 'Pizza' || 
-            cat === 'Sushi' || 
-            cat === 'Asiatique'
-          ).map((cat) => (
+          {cuisineTypes.filter(type => 
+            type === 'Tous' || 
+            type === 'Congolais' || 
+            type === 'Burgers' || 
+            type === 'Pizza' || 
+            type === 'Sushi' || 
+            type === 'Asiatique'
+          ).map((type) => (
             <button
-              key={cat}
-              onClick={() => {
-                setSelectedCuisine(cat);
-                if (cat !== 'Tous') {
-                  router.push('/client/restaurants');
-                }
-              }}
+              key={type}
+              onClick={() => handleFilterChange('cuisineType', type === 'Tous' ? '' : type)}
               className={`px-4 md:px-6 py-2 rounded-full font-body font-medium whitespace-nowrap transition ${
-                selectedCuisine === cat || (cat === 'Tous' && !selectedCuisine)
+                filters.cuisineType === type || (type === 'Tous' && !filters.cuisineType)
                   ? 'bg-bite-primary text-white shadow-bite'
                   : 'bg-white text-bite-text-dark hover:bg-bite-gray-light border border-bite-gray-300'
               }`}
             >
-              {cat}
+              {type}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Liste des restaurants */}
-      {featuredRestaurants.length > 0 ? (
-        <>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl md:text-2xl font-heading text-bite-text-dark">
-              Restaurants populaires
-            </h2>
-            <a
-              href="/client/restaurants"
-              className="text-bite-primary hover:text-bite-dark transition font-body font-medium text-sm"
+      {/* Filtres avancés */}
+      {showFilters && (
+        <div className="bg-white rounded-2xl shadow-bite p-4 md:p-6 border border-bite-gray-200 mb-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-heading text-bite-text-dark">Filtres avancés</h3>
+            <button
+              onClick={() => setShowFilters(false)}
+              className="text-bite-text-light hover:text-bite-primary transition"
             >
-              Voir tout →
-            </a>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {featuredRestaurants.map((restaurant) => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-            ))}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Type de cuisine */}
+            <div>
+              <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                Type de cuisine
+              </label>
+              <select
+                value={filters.cuisineType || 'Tous'}
+                onChange={(e) => handleFilterChange('cuisineType', e.target.value === 'Tous' ? '' : e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
+              >
+                {cuisineTypes.map((type) => (
+                  <option key={type} value={type === 'Tous' ? '' : type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Département */}
+            <div>
+              <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                Arrondissement
+              </label>
+              <select
+                value={filters.department || 'Tous'}
+                onChange={(e) => handleFilterChange('department', e.target.value === 'Tous' ? '' : e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
+              >
+                {departments.map((dept) => (
+                  <option key={dept} value={dept === 'Tous' ? '' : dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Quartier */}
+            <div>
+              <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                Quartier
+              </label>
+              <select
+                value={filters.district || 'Tous'}
+                onChange={(e) => handleFilterChange('district', e.target.value === 'Tous' ? '' : e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
+              >
+                {districts.map((district) => (
+                  <option key={district} value={district === 'Tous' ? '' : district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Prix */}
+            <div>
+              <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+                Prix
+              </label>
+              <select
+                value={filters.priceRange || 'Tous'}
+                onChange={(e) => handleFilterChange('priceRange', e.target.value === 'Tous' ? '' : e.target.value)}
+                className="w-full px-4 py-2.5 border-2 border-bite-gray-300 rounded-xl focus:ring-2 focus:ring-bite-primary focus:border-bite-primary transition font-body text-bite-text-dark"
+              >
+                {priceRanges.map((price) => (
+                  <option key={price} value={price === 'Tous' ? '' : price}>
+                    {price}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </>
+
+          {/* Note minimum */}
+          <div className="mt-4">
+            <label className="block text-sm font-body font-medium text-bite-text-dark mb-2">
+              Note minimum : {filters.minRating > 0 ? `${filters.minRating}+ ⭐` : 'Toutes'}
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.5"
+              value={filters.minRating}
+              onChange={(e) => handleFilterChange('minRating', parseFloat(e.target.value))}
+              className="w-full h-2 bg-bite-gray-300 rounded-lg appearance-none cursor-pointer accent-bite-primary"
+            />
+            <div className="flex justify-between text-xs text-bite-text-light mt-1">
+              <span>0</span>
+              <span>5</span>
+            </div>
+          </div>
+
+          {/* Réinitialiser les filtres */}
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={resetFilters}
+              className="px-4 py-2 text-bite-primary hover:text-bite-dark transition font-body font-medium"
+            >
+              Réinitialiser
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Résultats */}
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-bite-text-light font-body">
+          {filteredRestaurants.length} restaurant{filteredRestaurants.length > 1 ? 's' : ''} trouvé{filteredRestaurants.length > 1 ? 's' : ''}
+        </p>
+        {(filters.searchQuery || filters.cuisineType || filters.department || filters.district || filters.minRating > 0 || filters.priceRange) && (
+          <button
+            onClick={resetFilters}
+            className="text-sm text-bite-primary hover:text-bite-dark transition font-body font-medium"
+          >
+            Effacer tous les filtres
+          </button>
+        )}
+      </div>
+
+      {/* Liste des restaurants */}
+      {filteredRestaurants.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {filteredRestaurants.map((restaurant) => (
+            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+          ))}
+        </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-bite p-12 text-center border border-bite-gray-200">
           <svg
@@ -198,10 +320,7 @@ export default function ClientHome() {
             Essayez de modifier vos critères de recherche
           </p>
           <button
-            onClick={() => {
-              setSearchQuery('');
-              setSelectedCuisine('');
-            }}
+            onClick={resetFilters}
             className="px-6 py-2 bg-bite-primary text-white rounded-xl hover:bg-bite-dark transition font-heading font-bold"
           >
             Réinitialiser
@@ -211,4 +330,3 @@ export default function ClientHome() {
     </div>
   );
 }
-
