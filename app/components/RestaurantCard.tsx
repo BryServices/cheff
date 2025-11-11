@@ -6,7 +6,19 @@ interface RestaurantCardProps {
 }
 
 export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
-  const priceDisplay = '€'.repeat(restaurant.priceRange);
+  const getPriceDisplay = (range: number) => {
+    switch (range) {
+      case 1:
+        return 'F';
+      case 2:
+        return 'FF';
+      case 3:
+        return 'FFF';
+      default:
+        return 'F';
+    }
+  };
+  const priceDisplay = getPriceDisplay(restaurant.priceRange);
   
   return (
     <Link
@@ -46,7 +58,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-bite-text-dark font-body font-medium">{priceDisplay}</span>
+            <span className="text-bite-text-dark font-body font-medium text-xs">{priceDisplay}</span>
             <span className="text-bite-text-light text-xs font-body">•</span>
             <span className="text-bite-text-light text-xs font-body">{restaurant.deliveryTime}</span>
           </div>

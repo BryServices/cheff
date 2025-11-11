@@ -9,7 +9,7 @@ export interface Restaurant {
     city: string;
   };
   rating: number;
-  priceRange: 1 | 2 | 3; // €, €€, €€€
+  priceRange: 1 | 2 | 3; // FCFA (1 = Économique, 2 = Moyen, 3 = Élevé)
   deliveryTime: string;
   image: string;
   description: string;
@@ -29,6 +29,7 @@ export interface RestaurantFilters {
 
 export type CuisineType = 
   | 'Tous'
+  | 'Congolais'
   | 'Burgers'
   | 'Pizza'
   | 'Sushi'
@@ -39,5 +40,5 @@ export type CuisineType =
   | 'Fast Food'
   | 'Végétarien';
 
-export type PriceRange = 'Tous' | '€' | '€€' | '€€€';
+export type PriceRange = 'Tous' | 'F' | 'FF' | 'FFF';
 

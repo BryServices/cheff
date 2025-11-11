@@ -19,7 +19,7 @@ export default function OrdersPage() {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">15/06/2024</span>
-            <span className="font-semibold">25,00 €</span>
+            <span className="font-semibold">25 000 FCFA</span>
           </div>
         </div>
       </div>

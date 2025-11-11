@@ -10,13 +10,13 @@ export default function AdminPaymentsPage() {
           <h3 className="text-lg font-semibold text-gray-600 mb-2">
             Transactions totales
           </h3>
-          <p className="text-3xl font-bold text-green-600">0,00 €</p>
+          <p className="text-3xl font-bold text-green-600">0 FCFA</p>
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-600 mb-2">
             Commissions à verser
           </h3>
-          <p className="text-3xl font-bold text-orange-600">0,00 €</p>
+          <p className="text-3xl font-bold text-orange-600">0 FCFA</p>
         </div>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-600 mb-2">

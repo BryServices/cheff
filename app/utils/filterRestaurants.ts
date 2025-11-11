@@ -40,9 +40,9 @@ export function filterRestaurants(
     // Filtre par prix
     if (filters.priceRange) {
       const priceMap: { [key: string]: number } = {
-        '€': 1,
-        '€€': 2,
-        '€€€': 3,
+        'F': 1,
+        'FF': 2,
+        'FFF': 3,
       };
       if (restaurant.priceRange !== priceMap[filters.priceRange]) {
         return false;

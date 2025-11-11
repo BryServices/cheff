@@ -56,14 +56,14 @@ export default function ClientHome() {
       <div className="mb-4 md:mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl md:text-3xl font-heading text-bite-text-dark mb-2">
-            Bienvenue sur Bite
+            Bienvenue sur CHEFF
           </h1>
           <div className="flex items-center text-bite-text-light font-body">
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <span>Paris, France</span>
+            <span>Brazzaville, Congo</span>
           </div>
         </div>
       </div>
@@ -128,7 +128,14 @@ export default function ClientHome() {
       {/* Catégories */}
       <div className="mb-4 md:mb-6 overflow-x-auto">
         <div className="flex gap-2 md:gap-3 pb-2">
-          {cuisineTypes.slice(0, 6).map((cat) => (
+          {cuisineTypes.filter(cat => 
+            cat === 'Tous' || 
+            cat === 'Congolais' || 
+            cat === 'Burgers' || 
+            cat === 'Pizza' || 
+            cat === 'Sushi' || 
+            cat === 'Asiatique'
+          ).map((cat) => (
             <button
               key={cat}
               onClick={() => {

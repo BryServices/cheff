@@ -10,7 +10,7 @@ export default function AdminDashboard() {
           <h3 className="text-sm font-body font-medium text-bite-text-light mb-2 uppercase tracking-wide">
             CA Total
           </h3>
-          <p className="text-4xl font-price text-green-600">0,00 €</p>
+          <p className="text-4xl font-price text-green-600">0 FCFA</p>
         </div>
         <div className="bg-white rounded-2xl shadow-bite p-6 border border-bite-gray-200">
           <h3 className="text-sm font-body font-medium text-bite-text-light mb-2 uppercase tracking-wide">

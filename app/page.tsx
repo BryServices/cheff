@@ -7,7 +7,7 @@ export default function Home() {
         {/* Logo Bite style */}
         <div className="mb-8">
           <h1 className="text-7xl font-heading text-white mb-2 tracking-tight">
-            Bite
+            CHEFF
           </h1>
           <div className="w-24 h-1 bg-white mx-auto opacity-80"></div>
         </div>

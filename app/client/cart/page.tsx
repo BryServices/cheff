@@ -26,7 +26,7 @@ export default function CartPage() {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between text-bite-text-light font-body">
                 <span>Sous-total</span>
-                <span className="font-medium">0,00 €</span>
+                <span className="font-medium">0 FCFA</span>
               </div>
               <div className="flex justify-between text-bite-text-light font-body">
                 <span>Frais de livraison</span>
@@ -35,7 +35,7 @@ export default function CartPage() {
               <div className="pt-4 border-t-2 border-bite-gray-200">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-heading text-bite-text-dark">Total</span>
-                  <span className="text-2xl font-price text-bite-primary">0,00 €</span>
+                  <span className="text-2xl font-price text-bite-primary">0 FCFA</span>
                 </div>
               </div>
             </div>

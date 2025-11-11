@@ -12,7 +12,7 @@ export default function AdminLayout({
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/admin" className="text-2xl font-heading text-white tracking-tight hover:opacity-90 transition">
-                Bite Admin
+                CHEFF Admin
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-6">

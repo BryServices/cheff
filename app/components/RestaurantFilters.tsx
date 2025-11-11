@@ -74,7 +74,14 @@ export default function RestaurantFiltersComponent({
       {/* Catégories rapides */}
       <div className="mb-4 overflow-x-auto">
         <div className="flex gap-2 md:gap-3 pb-2">
-          {cuisineTypes.slice(0, 6).map((type) => (
+          {cuisineTypes.filter(type => 
+            type === 'Tous' || 
+            type === 'Congolais' || 
+            type === 'Burgers' || 
+            type === 'Pizza' || 
+            type === 'Sushi' || 
+            type === 'Asiatique'
+          ).map((type) => (
             <button
               key={type}
               onClick={() => handleFilterChange('cuisineType', type === 'Tous' ? '' : type)}

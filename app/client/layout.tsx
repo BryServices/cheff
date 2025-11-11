@@ -19,7 +19,7 @@ export default function ClientLayout({
                 </svg>
               </button>
               <Link href="/client" className="text-3xl font-heading text-white tracking-tight hover:opacity-90 transition">
-                Bite
+                CHEFF
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-6">
