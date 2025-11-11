@@ -15,8 +15,8 @@ export default function ClientLayout({
   const router = useRouter();
 
   // Pages qui nécessitent une authentification
-  // Note: /client/checkout est accessible sans auth, mais /client/checkout/confirm nécessite auth
-  const protectedRoutes = ['/client/cart', '/client/checkout/confirm', '/client/orders', '/client/profile'];
+  // Note: /client/checkout et /client/profile sont accessibles sans auth (l'auth est intégrée dans ces pages)
+  const protectedRoutes = ['/client/cart', '/client/checkout/confirm', '/client/orders'];
   const requiresAuth = protectedRoutes.some(route => pathname?.startsWith(route));
 
   // Rediriger vers la page de connexion uniquement pour les pages protégées
