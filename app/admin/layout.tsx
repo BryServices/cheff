@@ -26,25 +26,25 @@ export default function AdminLayout({
               </Link>
             </div>
             <div className="hidden md:flex items-center space-x-6">
-              <Link href="/admin/dashboard" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#tableau" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Tableau de bord
               </Link>
-              <Link href="/admin/restaurants" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#restaurants" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Restaurants
               </Link>
-              <Link href="/admin/users" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#utilisateurs" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Utilisateurs
               </Link>
-              <Link href="/admin/drivers" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#livreurs" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Livreurs
               </Link>
-              <Link href="/admin/payments" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#paiements" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Paiements
               </Link>
-              <Link href="/admin/zones" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#zones" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Zones
               </Link>
-              <Link href="/admin/settings" className="text-white hover:text-bite-accent transition font-body font-medium">
+              <Link href="/admin/dashboard#parametres" className="text-white hover:text-bite-accent transition font-body font-medium">
                 Paramètres
               </Link>
             </div>

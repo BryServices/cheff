@@ -149,6 +149,37 @@ const configSections = [
   { title: "Logs système", description: "Audit, webhooks, intégrations", icon: "logs" },
 ];
 
+const zones = [
+  {
+    name: "Abidjan Sud",
+    restaurants: 142,
+    livreurs: 58,
+    status: "Stable",
+    variation: "+8% trimestre",
+  },
+  {
+    name: "Abidjan Nord",
+    restaurants: 96,
+    livreurs: 42,
+    status: "Extension",
+    variation: "+15% semaine",
+  },
+  {
+    name: "Bouaké",
+    restaurants: 38,
+    livreurs: 18,
+    status: "Saturation",
+    variation: "-3% capacité",
+  },
+  {
+    name: "Yamoussoukro",
+    restaurants: 24,
+    livreurs: 12,
+    status: "Stable",
+    variation: "+4% mois",
+  },
+];
+
 const orderStatusColors: Record<string, string> = {
   "En cours": "bg-bite-accent/15 text-bite-dark",
   Livrée: "bg-bite-primary/10 text-bite-primary",
@@ -160,6 +191,12 @@ const driverStatusColors: Record<string, string> = {
   Disponible: "bg-bite-primary/10 text-bite-primary",
   "En mission": "bg-bite-accent/15 text-bite-dark",
   Inactif: "bg-bite-gray-200 text-bite-text-light",
+};
+
+const zoneStatusColors: Record<string, string> = {
+  Stable: "bg-bite-primary/10 text-bite-primary",
+  Extension: "bg-bite-accent/15 text-bite-dark",
+  Saturation: "bg-bite-dark/10 text-bite-dark",
 };
 
 const icons: Record<string, JSX.Element> = {
@@ -307,7 +344,7 @@ export default function AdminDashboard() {
 
         <main className="flex-1 min-h-screen bg-transparent">
           <section className="px-4 sm:px-6 xl:px-10 py-10 space-y-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div id="tableau" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 scroll-mt-24">
               {statsCards.map((card) => (
                 <div
                   key={card.label}
@@ -331,7 +368,10 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-              <div className="xl:col-span-7 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
+              <div
+                id="restaurants"
+                className="xl:col-span-7 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 scroll-mt-24"
+              >
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <h2 className="text-xl font-heading">Gestion des restaurants</h2>
@@ -386,7 +426,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6">
+              <div
+                id="utilisateurs"
+                className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6 scroll-mt-24"
+              >
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-heading">Rôles & accès</h2>
                   <button className="text-sm font-semibold text-bite-primary hover:underline">
@@ -415,7 +458,10 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-              <div className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
+              <div
+                id="livreurs"
+                className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 scroll-mt-24"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-heading">Livreurs actifs</h2>
                   <button className="text-sm font-semibold text-bite-primary hover:underline">
@@ -503,7 +549,10 @@ export default function AdminDashboard() {
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-              <div className="xl:col-span-6 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-5">
+              <div
+                id="paiements"
+                className="xl:col-span-6 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-5 scroll-mt-24"
+              >
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-heading">Paiements</h2>
                   <button className="text-sm font-semibold text-bite-primary hover:underline">
@@ -557,31 +606,77 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="xl:col-span-6 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6">
+              <div
+                id="zones"
+                className="xl:col-span-6 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6 scroll-mt-24"
+              >
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-heading">Paramètres & configuration</h2>
-                  <button className="text-sm font-semibold text-bite-primary hover:underline">Tout configurer</button>
+                  <h2 className="text-xl font-heading">Zones & couverture</h2>
+                  <button className="text-sm font-semibold text-bite-primary hover:underline">
+                    Configurer les zones
+                  </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {configSections.map((section) => (
+                  {zones.map((zone) => (
                     <div
-                      key={section.title}
-                      className="border border-bite-gray-100 rounded-2xl p-4 flex flex-col gap-3 hover:border-bite-primary/40 transition-all"
+                      key={zone.name}
+                      className="border border-bite-gray-100 rounded-2xl p-4 space-y-3 hover:border-bite-primary/40 transition-all"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="h-10 w-10 rounded-2xl bg-bite-gray-100 flex items-center justify-center text-bite-primary">
-                          {icons[section.icon]}
-                        </span>
-                        <p className="font-semibold text-bite-dark">{section.title}</p>
-                      </div>
-                      <p className="text-sm text-bite-text-light">{section.description}</p>
                       <div className="flex items-center justify-between">
-                        <button className="text-xs font-semibold text-bite-primary">Configurer</button>
-                        <button className="text-xs text-bite-text-light">Modifier</button>
+                        <p className="font-semibold text-bite-dark">{zone.name}</p>
+                        <span
+                          className={classNames(
+                            "px-3 py-1 rounded-full text-xs font-semibold",
+                            zoneStatusColors[zone.status]
+                          )}
+                        >
+                          {zone.status}
+                        </span>
                       </div>
+                      <div className="flex items-center gap-6 text-sm">
+                        <div>
+                          <p className="text-xs text-bite-text-light">Restaurants</p>
+                          <p className="font-semibold text-bite-dark">{zone.restaurants}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-bite-text-light">Livreurs</p>
+                          <p className="font-semibold text-bite-dark">{zone.livreurs}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-bite-text-light">{zone.variation}</p>
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+
+            <div
+              id="parametres"
+              className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6 scroll-mt-24"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-heading">Paramètres & configuration</h2>
+                <button className="text-sm font-semibold text-bite-primary hover:underline">Tout configurer</button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {configSections.map((section) => (
+                  <div
+                    key={section.title}
+                    className="border border-bite-gray-100 rounded-2xl p-4 flex flex-col gap-3 hover:border-bite-primary/40 transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="h-10 w-10 rounded-2xl bg-bite-gray-100 flex items-center justify-center text-bite-primary">
+                        {icons[section.icon]}
+                      </span>
+                      <p className="font-semibold text-bite-dark">{section.title}</p>
+                    </div>
+                    <p className="text-sm text-bite-text-light">{section.description}</p>
+                    <div className="flex items-center justify-between">
+                      <button className="text-xs font-semibold text-bite-primary">Configurer</button>
+                      <button className="text-xs text-bite-text-light">Modifier</button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
