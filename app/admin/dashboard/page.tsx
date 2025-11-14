@@ -47,24 +47,78 @@ const restaurants = [
     logo: "CF",
     status: "Actif",
     orders: 1280,
+    revenue: "12,8 M FCFA",
+    zone: "Abidjan Sud",
+    drivers: 8,
+    lastActivity: "il y a 5 min",
+    rating: 4.8,
+    owner: "Fatou Diallo",
+    phone: "+225 07 12 34 56",
   },
   {
     name: "Urban Burger",
     logo: "UB",
     status: "Actif",
     orders: 940,
+    revenue: "9,2 M FCFA",
+    zone: "Abidjan Nord",
+    drivers: 6,
+    lastActivity: "il y a 12 min",
+    rating: 4.6,
+    owner: "Koffi Kouassi",
+    phone: "+225 05 23 45 67",
   },
   {
     name: "Maison Saba",
     logo: "MS",
     status: "Suspendu",
     orders: 120,
+    revenue: "1,1 M FCFA",
+    zone: "Bouaké",
+    drivers: 2,
+    lastActivity: "il y a 2 jours",
+    rating: 4.2,
+    owner: "Saba Traoré",
+    phone: "+225 01 34 56 78",
   },
   {
     name: "Les Papilles",
     logo: "LP",
     status: "Actif",
     orders: 760,
+    revenue: "7,8 M FCFA",
+    zone: "Abidjan Sud",
+    drivers: 5,
+    lastActivity: "il y a 8 min",
+    rating: 4.9,
+    owner: "Marie Koné",
+    phone: "+225 07 45 67 89",
+  },
+  {
+    name: "Le Gourmet",
+    logo: "LG",
+    status: "Actif",
+    orders: 1520,
+    revenue: "15,6 M FCFA",
+    zone: "Yamoussoukro",
+    drivers: 10,
+    lastActivity: "il y a 3 min",
+    rating: 4.7,
+    owner: "Jean-Baptiste Yao",
+    phone: "+225 05 67 89 01",
+  },
+  {
+    name: "Pizza Express",
+    logo: "PE",
+    status: "Actif",
+    orders: 890,
+    revenue: "8,5 M FCFA",
+    zone: "Abidjan Nord",
+    drivers: 7,
+    lastActivity: "il y a 15 min",
+    rating: 4.5,
+    owner: "Amadou Diarra",
+    phone: "+225 01 23 45 67",
   },
 ];
 
@@ -535,62 +589,166 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
               <div
                 id="restaurants"
-                className="xl:col-span-7 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 scroll-mt-24"
+                className="xl:col-span-12 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 scroll-mt-24"
               >
-                <div className="flex items-center justify-between mb-5">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                   <div>
                     <h2 className="text-xl font-heading">Gestion des restaurants</h2>
-                    <p className="text-sm text-bite-text-light">État global et performance</p>
+                    <p className="text-sm text-bite-text-light">État global et performance • {restaurants.length} restaurants</p>
                   </div>
-                  <button className="text-sm font-semibold text-bite-primary hover:underline">
-                    Ajouter un restaurant
-                  </button>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="relative flex-1 sm:flex-initial min-w-[200px]">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-bite-text-light">
+                        {icons.search}
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="Rechercher un restaurant..."
+                        className="w-full pl-10 pr-4 py-2 rounded-2xl border border-bite-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-bite-primary/20 focus:border-bite-primary"
+                      />
+                    </div>
+                    <button className="px-4 py-2 rounded-2xl border border-bite-gray-200 text-xs font-semibold text-bite-text-light hover:text-bite-dark hover:border-bite-gray-300 transition-colors">
+                      Filtrer
+                    </button>
+                    <button className="px-5 py-2 rounded-2xl bg-bite-primary text-white text-sm font-semibold shadow-bite-lg hover:bg-bite-dark transition-colors">
+                      + Ajouter un restaurant
+                    </button>
+                  </div>
                 </div>
+
+                {/* Statistiques rapides */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                  <div className="border border-bite-gray-100 rounded-2xl p-4">
+                    <p className="text-xs text-bite-text-light uppercase tracking-wide mb-1">Actifs</p>
+                    <p className="text-2xl font-heading text-bite-primary">
+                      {restaurants.filter((r) => r.status === "Actif").length}
+                    </p>
+                  </div>
+                  <div className="border border-bite-gray-100 rounded-2xl p-4">
+                    <p className="text-xs text-bite-text-light uppercase tracking-wide mb-1">Total CA</p>
+                    <p className="text-2xl font-heading text-bite-dark">54,0 M</p>
+                  </div>
+                  <div className="border border-bite-gray-100 rounded-2xl p-4">
+                    <p className="text-xs text-bite-text-light uppercase tracking-wide mb-1">Commandes</p>
+                    <p className="text-2xl font-heading text-bite-dark">
+                      {restaurants.reduce((sum, r) => sum + r.orders, 0).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="border border-bite-gray-100 rounded-2xl p-4">
+                    <p className="text-xs text-bite-text-light uppercase tracking-wide mb-1">Note moyenne</p>
+                    <p className="text-2xl font-heading text-bite-dark">
+                      {(restaurants.reduce((sum, r) => sum + r.rating, 0) / restaurants.length).toFixed(1)}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="rounded-2xl border border-bite-gray-100 overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead className="bg-bite-gray-50 text-bite-text-light uppercase text-xs tracking-wide">
-                      <tr>
-                        {["Restaurant", "Statut", "Commandes", ""].map((col) => (
-                          <th key={col} className="px-6 py-4 text-left">
-                            {col}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-bite-gray-100">
-                      {restaurants.map((restaurant) => (
-                        <tr key={restaurant.name} className="hover:bg-bite-gray-50/80 transition-colors">
-                          <td className="px-6 py-4 flex items-center gap-3">
-                            <span className="h-10 w-10 rounded-2xl bg-bite-gray-100 text-bite-dark font-semibold flex items-center justify-center">
-                              {restaurant.logo}
-                            </span>
-                            <span className="font-semibold text-bite-dark">{restaurant.name}</span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={classNames(
-                                "px-3 py-1 rounded-full text-xs font-semibold",
-                                restaurant.status === "Actif"
-                                  ? "bg-bite-primary/10 text-bite-primary"
-                                  : "bg-bite-dark/10 text-bite-dark"
-                              )}
-                            >
-                              {restaurant.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-bite-text-light">{restaurant.orders}</td>
-                          <td className="px-6 py-4 text-right">
-                            <button className="text-sm font-semibold text-bite-primary hover:underline">
-                              Gérer
-                            </button>
-                          </td>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-bite-gray-50 text-bite-text-light uppercase text-xs tracking-wide">
+                        <tr>
+                          {["Restaurant", "Propriétaire", "Zone", "Statut", "CA", "Commandes", "Livreurs", "Note", "Dernière activité", ""].map((col) => (
+                            <th key={col} className="px-4 py-4 text-left whitespace-nowrap">
+                              {col}
+                            </th>
+                          ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-bite-gray-100">
+                        {restaurants.map((restaurant) => (
+                          <tr key={restaurant.name} className="hover:bg-bite-gray-50/80 transition-colors group">
+                            <td className="px-4 py-4">
+                              <div className="flex items-center gap-3">
+                                <span className="h-10 w-10 rounded-2xl bg-bite-gradient text-bite-dark font-bold flex items-center justify-center shadow-bite">
+                                  {restaurant.logo}
+                                </span>
+                                <div>
+                                  <p className="font-semibold text-bite-dark">{restaurant.name}</p>
+                                  <p className="text-xs text-bite-text-light">{restaurant.phone}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4">
+                              <p className="text-bite-dark">{restaurant.owner}</p>
+                            </td>
+                            <td className="px-4 py-4">
+                              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-bite-gray-100 text-bite-text-dark">
+                                {restaurant.zone}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4">
+                              <span
+                                className={classNames(
+                                  "px-3 py-1 rounded-full text-xs font-semibold",
+                                  restaurant.status === "Actif"
+                                    ? "bg-bite-primary/10 text-bite-primary"
+                                    : "bg-bite-dark/10 text-bite-dark"
+                                )}
+                              >
+                                {restaurant.status}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4">
+                              <p className="font-semibold text-bite-dark">{restaurant.revenue}</p>
+                            </td>
+                            <td className="px-4 py-4">
+                              <p className="text-bite-text-dark">{restaurant.orders.toLocaleString()}</p>
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center gap-2">
+                                <span className="text-bite-text-dark">{restaurant.drivers}</span>
+                                <span className="text-bite-text-light text-xs">livreurs</span>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center gap-1">
+                                <span className="text-bite-accent font-semibold">{restaurant.rating}</span>
+                                <svg className="h-4 w-4 text-bite-accent" fill="currentColor" viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              </div>
+                            </td>
+                            <td className="px-4 py-4">
+                              <p className="text-xs text-bite-text-light">{restaurant.lastActivity}</p>
+                            </td>
+                            <td className="px-4 py-4">
+                              <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button className="text-xs font-semibold text-bite-primary hover:underline">
+                                  Détails
+                                </button>
+                                <button className="text-xs font-semibold text-bite-text-light hover:text-bite-dark">
+                                  Modifier
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex items-center justify-between mt-6 pt-6 border-t border-bite-gray-200">
+                  <p className="text-sm text-bite-text-light">
+                    Affichage de 1 à {restaurants.length} sur {restaurants.length} restaurants
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-2 rounded-xl border border-bite-gray-200 text-sm text-bite-text-light hover:text-bite-dark hover:border-bite-gray-300 transition-colors">
+                      Précédent
+                    </button>
+                    <button className="px-3 py-2 rounded-xl bg-bite-primary text-white text-sm font-semibold">
+                      1
+                    </button>
+                    <button className="px-3 py-2 rounded-xl border border-bite-gray-200 text-sm text-bite-text-light hover:text-bite-dark hover:border-bite-gray-300 transition-colors">
+                      Suivant
+                    </button>
+                  </div>
                 </div>
               </div>
+            </div>
 
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
               <div
                 id="utilisateurs"
                 className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6 scroll-mt-24"
