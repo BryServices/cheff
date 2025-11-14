@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const navItems = [
   { label: "Dashboard", icon: "grid", active: true },
   { label: "Restaurants", icon: "store" },
@@ -90,6 +92,24 @@ const roles = [
     accent: "bg-bite-light/10 text-bite-light",
   },
 ];
+
+const quickHeaderActions = [
+  { label: "Créer un restaurant" },
+  { label: "Créer un utilisateur" },
+  { label: "Voir logs système" },
+];
+
+const activityIcons = [
+  { label: "Notifications", icon: "bell", badge: 5 },
+  { label: "Messages", icon: "inbox", badge: 2 },
+  { label: "Alertes", icon: "alert", badge: 1 },
+  { label: "Logs", icon: "bug", badge: 8 },
+];
+
+const platformStatus = {
+  state: "Plateforme opérationnelle",
+  color: "bg-green-500",
+};
 
 const drivers = [
   { name: "Sarah Akissi", status: "Disponible", lastActive: "il y a 6 min" },
@@ -293,11 +313,70 @@ const icons: Record<string, JSX.Element> = {
       <path d="M12 11v6" />
     </svg>
   ),
+  search: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.35-4.35" />
+    </svg>
+  ),
+  sun: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2" />
+      <path d="M12 20v2" />
+      <path d="m4.93 4.93 1.41 1.41" />
+      <path d="m17.66 17.66 1.41 1.41" />
+      <path d="M2 12h2" />
+      <path d="M20 12h2" />
+      <path d="m6.34 17.66-1.41 1.41" />
+      <path d="m19.07 4.93-1.41 1.41" />
+    </svg>
+  ),
+  moon: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+    </svg>
+  ),
+  bell: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+      <path d="M10 21c.5 1 3.5 1 4 0" />
+    </svg>
+  ),
+  inbox: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M21 14V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8" />
+      <path d="M3 14h4l2 3h6l2-3h4" />
+      <path d="M3 14v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4" />
+    </svg>
+  ),
+  alert: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M10.29 3.86 1.82 18a1 1 0 0 0 .86 1.5h18.64a1 1 0 0 0 .86-1.5L13.71 3.86a1 1 0 0 0-1.72 0Z" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </svg>
+  ),
+  bug: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M8 2l1.88 1.88" />
+      <path d="M16 2l-1.88 1.88" />
+      <path d="M9 7c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v2H9Z" />
+      <path d="M5 7h2" />
+      <path d="M17 7h2" />
+      <path d="M4 14h3" />
+      <path d="M17 14h3" />
+      <path d="M6 18h2" />
+      <path d="M16 18h2" />
+      <path d="M8 7v10a4 4 0 0 0 8 0V7" />
+    </svg>
+  ),
 };
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 export default function AdminDashboard() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const paymentChart = [65, 45, 78, 52, 90, 64, 88];
   const maxPayment = Math.max(...paymentChart);
 
@@ -344,6 +423,90 @@ export default function AdminDashboard() {
 
         <main className="flex-1 min-h-screen bg-transparent">
           <section className="px-4 sm:px-6 xl:px-10 py-10 space-y-10">
+            <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6">
+              <div className="flex flex-wrap items-center gap-4">
+                <div>
+                  <p className="text-sm text-bite-text-light uppercase tracking-wide">Cheff-Mu Admin</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`h-2 w-2 rounded-full ${platformStatus.color}`} />
+                    <p className="text-sm font-semibold text-bite-dark">{platformStatus.state}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 ml-auto">
+                  <button
+                    onClick={() => setIsDarkMode((prev) => !prev)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-bite-gray-200 text-xs font-semibold text-bite-text-light hover:text-bite-dark"
+                  >
+                    {isDarkMode ? icons.sun : icons.moon}
+                    <span>{isDarkMode ? "Mode clair" : "Mode sombre"}</span>
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <div className="h-11 w-11 rounded-full bg-bite-gray-100 text-bite-dark font-semibold flex items-center justify-center">
+                      SA
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-semibold text-bite-dark">Super Admin</p>
+                      <div className="flex items-center gap-2 text-xs text-bite-text-light">
+                        <button className="hover:text-bite-primary">Profil</button>
+                        <span>•</span>
+                        <button className="hover:text-bite-primary">Paramètres</button>
+                        <span>•</span>
+                        <button className="hover:text-bite-primary">Déconnexion</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
+                <div className="flex-1 min-w-[280px]">
+                  <label className="flex items-center gap-3 bg-bite-gray-50 border border-bite-gray-200 rounded-2xl px-4 py-3 text-sm text-bite-text-light">
+                    <span className="text-bite-text-light">{icons.search}</span>
+                    <input
+                      type="text"
+                      placeholder="Rechercher restaurants, utilisateurs, livreurs, commandes..."
+                      className="flex-1 bg-transparent outline-none text-bite-dark placeholder:text-bite-text-light"
+                      autoComplete="off"
+                    />
+                    <span className="text-xs font-semibold text-bite-text-light">Ctrl + K</span>
+                  </label>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  {quickHeaderActions.map((action, index) => (
+                    <button
+                      key={action.label}
+                      className={classNames(
+                        "px-4 py-2 rounded-2xl text-xs font-semibold transition-all",
+                        index === 0
+                          ? "bg-bite-primary text-white shadow-bite-lg"
+                          : "bg-white border border-bite-gray-200 text-bite-dark"
+                      )}
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                {activityIcons.map((item) => (
+                  <button
+                    key={item.label}
+                    className="relative h-11 w-11 rounded-2xl border border-bite-gray-200 flex items-center justify-center text-bite-text-light hover:text-bite-dark"
+                  >
+                    {icons[item.icon]}
+                    {item.badge ? (
+                      <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-bite-primary text-white text-[10px] flex items-center justify-center">
+                        {item.badge}
+                      </span>
+                    ) : null}
+                    <span className="sr-only">{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div id="tableau" className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 scroll-mt-24">
               {statsCards.map((card) => (
                 <div
