@@ -1,527 +1,586 @@
 const navItems = [
-  { label: "Dashboard", active: true },
-  { label: "Commandes" },
-  { label: "Plats" },
-  { label: "Livreurs" },
-  { label: "Clients" },
-  { label: "Paiements" },
-  { label: "Paramètres" },
+  { label: "Dashboard", icon: "grid", active: true },
+  { label: "Restaurants", icon: "store" },
+  { label: "Utilisateurs", icon: "users" },
+  { label: "Livreurs", icon: "bike" },
+  { label: "Commandes", icon: "list" },
+  { label: "Paiements", icon: "credit" },
+  { label: "Paramètres global", icon: "settings" },
+  { label: "Support", icon: "life" },
+  { label: "Logs système", icon: "logs" },
 ];
 
 const statsCards = [
   {
-    label: "Commandes du jour",
-    value: "128",
-    trend: "+18% vs hier",
-    accent: "bg-bite-primary/10 text-bite-primary",
+    label: "Restaurants actifs",
+    value: "324",
+    detail: "+12 nouveaux cette semaine",
+    trend: "+4,6%",
   },
   {
-    label: "Commandes en cours",
-    value: "32",
-    trend: "12 min moyenne",
-    accent: "bg-bite-accent/10 text-bite-accent",
+    label: "Commandes globales",
+    value: "18 420",
+    detail: "Jour 520 • Semaine 3 980 • Mois 12 450",
+    trend: "+18% vs semaine passée",
   },
   {
-    label: "Livrées",
-    value: "96",
-    trend: "92% dans les délais",
-    accent: "bg-bite-dark/10 text-bite-dark",
+    label: "Chiffre d’affaires",
+    value: "94,5 M FCFA",
+    detail: "Ticket moyen 5 140 FCFA",
+    trend: "+9,4%",
   },
   {
-    label: "Revenus du jour",
-    value: "845 500 FCFA",
-    trend: "+12% semaine",
-    accent: "bg-bite-light/10 text-bite-light",
+    label: "Taux activité livreurs",
+    value: "86%",
+    detail: "45 en mission • 8 inactifs",
+    trend: "+3 points",
   },
 ];
 
-const orders = [
+const restaurants = [
   {
-    id: "#CMD-9821",
-    client: "Awa Diop",
-    address: "Plateau, Abidjan",
-    status: "En cours",
-    time: "12:24",
-    driver: "Koffi M.",
+    name: "Chez Fati",
+    logo: "CF",
+    status: "Actif",
+    orders: 1280,
   },
   {
-    id: "#CMD-9820",
-    client: "Lucas N'Guessan",
-    address: "Marcory, zone 4",
-    status: "Livrée",
-    time: "12:12",
-    driver: "Sarah A.",
+    name: "Urban Burger",
+    logo: "UB",
+    status: "Actif",
+    orders: 940,
   },
   {
-    id: "#CMD-9819",
-    client: "Fatou K.",
-    address: "Cocody, Riviera 3",
-    status: "En cours",
-    time: "12:05",
-    driver: "Idriss L.",
+    name: "Maison Saba",
+    logo: "MS",
+    status: "Suspendu",
+    orders: 120,
   },
   {
-    id: "#CMD-9818",
-    client: "Jean Yao",
-    address: "Treichville",
-    status: "Annulée",
-    time: "11:58",
-    driver: "—",
+    name: "Les Papilles",
+    logo: "LP",
+    status: "Actif",
+    orders: 760,
+  },
+];
+
+const roles = [
+  {
+    label: "Administrateurs",
+    count: 8,
+    description: "Accès complet à la plateforme",
+    accent: "bg-bite-primary/10 text-bite-primary",
+  },
+  {
+    label: "Restaurants",
+    count: 324,
+    description: "Gestionnaire de menus et commandes",
+    accent: "bg-bite-accent/10 text-bite-accent",
+  },
+  {
+    label: "Livreurs",
+    count: 212,
+    description: "Suivi temps réel des missions",
+    accent: "bg-bite-dark/10 text-bite-dark",
+  },
+  {
+    label: "Clients",
+    count: 21_430,
+    description: "Commandes et fidélité",
+    accent: "bg-bite-light/10 text-bite-light",
   },
 ];
 
 const drivers = [
   { name: "Sarah Akissi", status: "Disponible", lastActive: "il y a 6 min" },
-  { name: "Koffi Marcel", status: "En livraison", lastActive: "il y a 2 min" },
-  { name: "Idriss Loukou", status: "En pause", lastActive: "il y a 18 min" },
-  { name: "Moussa Diabaté", status: "Disponible", lastActive: "il y a 10 min" },
+  { name: "Koffi Marcel", status: "En mission", lastActive: "En livraison" },
+  { name: "Idriss Loukou", status: "Inactif", lastActive: "il y a 2 h" },
+  { name: "Moussa Diabaté", status: "Disponible", lastActive: "il y a 3 min" },
 ];
 
-const notifications = [
+const orders = [
   {
-    title: "Rupture de stock",
-    detail: "Poulet braisé - Restaurant Chez Fati",
-    type: "warning",
-    time: "il y a 5 min",
+    id: "#CMD-21450",
+    restaurant: "Chez Fati",
+    client: "Awa Diop",
+    status: "En cours",
+    total: "18 500 FCFA",
+    date: "14:32",
   },
   {
-    title: "Alertes livraison",
-    detail: "Délai > 35 min pour 3 commandes",
-    type: "urgent",
-    time: "il y a 12 min",
+    id: "#CMD-21449",
+    restaurant: "Urban Burger",
+    client: "Lucas N’Guessan",
+    status: "Livrée",
+    total: "9 800 FCFA",
+    date: "14:10",
   },
   {
-    title: "Nouveau client VIP",
-    detail: "Compte Entreprise Groupe Nimba",
-    type: "info",
-    time: "il y a 30 min",
+    id: "#CMD-21448",
+    restaurant: "Maison Saba",
+    client: "Fatou Koné",
+    status: "Retard",
+    total: "15 300 FCFA",
+    date: "13:54",
+  },
+  {
+    id: "#CMD-21447",
+    restaurant: "Les Papilles",
+    client: "Jean Yao",
+    status: "Annulée",
+    total: "—",
+    date: "13:48",
   },
 ];
 
-const quickActions = [
-  { label: "Ajouter commande" },
-  { label: "Créer un plat" },
-  { label: "Livreurs" },
+const payments = [
+  { label: "Volume traité", value: "48,2 M FCFA", detail: "+12% ce mois" },
+  { label: "Commissions", value: "5,1 M FCFA", detail: "10,5% moyen" },
+  { label: "En attente", value: "2,4 M FCFA", detail: "37 transactions" },
+  { label: "Validés", value: "1,8 M FCFA", detail: "24 transactions" },
 ];
 
-const weeklySales = [
-  { day: "Lun", value: 320 },
-  { day: "Mar", value: 410 },
-  { day: "Mer", value: 380 },
-  { day: "Jeu", value: 520 },
-  { day: "Ven", value: 610 },
-  { day: "Sam", value: 720 },
-  { day: "Dim", value: 450 },
+const configSections = [
+  { title: "Paramètres globaux", description: "Fuseaux, devises, SLA", icon: "globe" },
+  { title: "Politique de prix", description: "Marges, promotions, TVA", icon: "tag" },
+  { title: "Méthodes de paiement", description: "Portefeuilles, cartes, mobile money", icon: "card" },
+  { title: "Sécurité & accès", description: "SSO, MFA, journaux", icon: "shield" },
+  { title: "Support", description: "Escalade, SLA, réponses templates", icon: "life" },
+  { title: "Logs système", description: "Audit, webhooks, intégrations", icon: "logs" },
 ];
 
-const statusDistribution = [
-  { label: "Livrées", value: 72, color: "#A30000" },
-  { label: "En cours", value: 20, color: "#FFC107" },
-  { label: "Annulées", value: 8, color: "#8B0000" },
-];
-
-const statusColors: Record<string, string> = {
-  "En cours": "bg-bite-accent/10 text-bite-accent",
+const orderStatusColors: Record<string, string> = {
+  "En cours": "bg-bite-accent/15 text-bite-dark",
   Livrée: "bg-bite-primary/10 text-bite-primary",
+  Retard: "bg-bite-light/15 text-bite-light",
   Annulée: "bg-bite-dark/10 text-bite-dark",
 };
 
 const driverStatusColors: Record<string, string> = {
   Disponible: "bg-bite-primary/10 text-bite-primary",
-  "En livraison": "bg-bite-accent/10 text-bite-accent",
-  "En pause": "bg-bite-dark/10 text-bite-dark",
+  "En mission": "bg-bite-accent/15 text-bite-dark",
+  Inactif: "bg-bite-gray-200 text-bite-text-light",
 };
 
-const notificationColors: Record<string, string> = {
-  warning: "border-bite-accent/40",
-  urgent: "border-bite-primary/40",
-  info: "border-bite-dark/30",
+const icons: Record<string, JSX.Element> = {
+  grid: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <rect x="14" y="14" width="7" height="7" rx="1.5" />
+    </svg>
+  ),
+  store: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M4 7h16l-1.2 10.5a2 2 0 0 1-2 1.5H7.2a2 2 0 0 1-2-1.5L4 7Z" />
+      <path d="M3 7h18l-2-3H5Z" />
+      <path d="M9 11h6v8" />
+    </svg>
+  ),
+  users: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="8" r="3" />
+      <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" />
+    </svg>
+  ),
+  bike: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="18" cy="18" r="3" />
+      <path d="M6 18h4l4-9h4" />
+      <path d="M11 9h5l-1-3h-3" />
+    </svg>
+  ),
+  list: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M8 6h13" />
+      <path d="M8 12h13" />
+      <path d="M8 18h13" />
+      <circle cx="3" cy="6" r="1.5" />
+      <circle cx="3" cy="12" r="1.5" />
+      <circle cx="3" cy="18" r="1.5" />
+    </svg>
+  ),
+  credit: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3 10h18" />
+      <path d="M7 15h3" />
+    </svg>
+  ),
+  settings: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-3 0 1.65 1.65 0 0 0-.33 1.82l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.82-.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 3 0 1.65 1.65 0 0 0 .33-1.82l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.82.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0 0 2.34Z" />
+    </svg>
+  ),
+  life: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v10" />
+      <path d="M7 12h10" />
+    </svg>
+  ),
+  logs: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M4 4h16v4H4z" />
+      <path d="M4 10h16v10H4z" />
+      <path d="M8 14h8" />
+      <path d="M8 18h5" />
+    </svg>
+  ),
+  globe: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9Z" />
+    </svg>
+  ),
+  tag: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M20.59 13.41 11 3H3v8l9.59 9.59a2 2 0 0 0 2.82 0l5.18-5.18a2 2 0 0 0 0-2.82Z" />
+      <circle cx="7.5" cy="7.5" r="1.5" />
+    </svg>
+  ),
+  card: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <rect x="2" y="5" width="20" height="14" rx="2" />
+      <path d="M2 10h20" />
+      <path d="M6 15h4" />
+    </svg>
+  ),
+  shield: (
+    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M12 3 4 6v6c0 5 3.58 9.74 8 11 4.42-1.26 8-6 8-11V6Z" />
+      <path d="M12 11v6" />
+    </svg>
+  ),
 };
 
 const classNames = (...classes: string[]) => classes.filter(Boolean).join(" ");
 
 export default function AdminDashboard() {
-  const today = new Intl.DateTimeFormat("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  }).format(new Date());
-
-  const maxWeeklyValue = Math.max(...weeklySales.map((item) => item.value));
-  const linePoints = weeklySales
-    .map((item, index) => {
-      const x = (index / (weeklySales.length - 1)) * 100;
-      const y = 100 - (item.value / maxWeeklyValue) * 100;
-      return `${x},${y}`;
-    })
-    .join(" ");
-
-  const totalStatus = statusDistribution.reduce(
-    (sum, status) => sum + status.value,
-    0
-  );
+  const paymentChart = [65, 45, 78, 52, 90, 64, 88];
+  const maxPayment = Math.max(...paymentChart);
 
   return (
     <div className="min-h-screen bg-bite-gray-50 text-bite-text-dark font-body">
-      <div className="flex flex-col lg:flex-row min-h-screen">
-        <aside className="hidden lg:flex lg:w-72 border-r border-bite-gray-200 bg-white/95 backdrop-blur px-6 py-8 flex-col gap-8">
+      <div className="flex min-h-screen">
+        <aside className="hidden lg:flex lg:w-72 border-r border-bite-gray-200 bg-white/95 backdrop-blur-xl px-6 py-8 flex-col gap-8">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 rounded-2xl bg-bite-gradient flex items-center justify-center text-bite-dark font-bold text-xl shadow-bite">
               C
             </div>
             <div>
-              <p className="text-lg font-heading text-bite-dark">Cheff Admin</p>
-              <p className="text-sm text-bite-text-light">Gestion centrale</p>
+              <p className="text-lg font-heading text-bite-dark">Cheff Super Admin</p>
+              <p className="text-sm text-bite-text-light">Écosystème Cheff-Mu</p>
             </div>
           </div>
 
-          <nav className="space-y-2">
+          <nav className="space-y-1">
             {navItems.map((item) => (
               <button
                 key={item.label}
                 className={classNames(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300",
+                  "group w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-300",
                   item.active
                     ? "bg-bite-gradient text-bite-dark shadow-bite-lg"
-                    : "text-bite-text-light hover:text-bite-text-dark hover:bg-bite-gray-100/70"
+                    : "text-bite-text-light hover:text-bite-dark hover:bg-bite-gray-100/70"
                 )}
               >
                 <span
                   className={classNames(
-                    "inline-flex h-9 w-9 items-center justify-center rounded-xl border border-bite-gray-200 transition-all",
+                    "inline-flex h-9 w-9 items-center justify-center rounded-2xl border transition-all duration-300",
                     item.active
-                      ? "bg-white/80 text-bite-primary"
-                      : "bg-white text-bite-text-light"
+                      ? "bg-white/90 border-transparent text-bite-primary"
+                      : "bg-white border-bite-gray-200 group-hover:border-bite-gray-300"
                   )}
                 >
-                  <span className="text-xs font-semibold">
-                    {item.label.slice(0, 2)}
-                  </span>
+                  {icons[item.icon]}
                 </span>
-                {item.label}
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
         </aside>
 
-        <main className="flex-1 min-h-screen flex flex-col">
-          <header className="border-b border-bite-gray-200 bg-white/90 backdrop-blur px-4 sm:px-6 lg:px-10 py-6 flex flex-col gap-6">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div>
-                <p className="text-sm uppercase tracking-[0.25em] text-bite-text-light">
-                  Tableau de bord
-                </p>
-                <h1 className="text-3xl font-heading text-bite-dark mt-2">
-                  Restaurant HQ
-                </h1>
-                <p className="text-sm text-bite-text-light">{today}</p>
-              </div>
-
-              <div className="flex flex-wrap gap-3">
-                {quickActions.map((action, index) => (
-                  <button
-                    key={action.label}
-                    className={classNames(
-                      "px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-300 shadow-bite",
-                      index === 0
-                        ? "bg-bite-primary text-white hover:-translate-y-0.5"
-                        : "bg-white border border-bite-gray-200 text-bite-dark hover:-translate-y-0.5"
-                    )}
-                  >
-                    {action.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </header>
-
-          <section className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 py-8 space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <main className="flex-1 min-h-screen bg-transparent">
+          <section className="px-4 sm:px-6 xl:px-10 py-10 space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
               {statsCards.map((card) => (
                 <div
                   key={card.label}
-                  className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 flex flex-col gap-4 transition-all duration-300 hover:-translate-y-1"
+                  className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 flex flex-col gap-4"
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-bite-text-light uppercase tracking-wide">
+                    <p className="text-sm uppercase tracking-wide text-bite-text-light">
                       {card.label}
                     </p>
-                    <span
-                      className={classNames(
-                        "text-xs font-semibold px-3 py-1 rounded-full",
-                        card.accent
-                      )}
-                    >
+                    <span className="text-xs font-semibold px-3 py-1 rounded-full bg-bite-gray-100 text-bite-dark">
                       {card.trend}
                     </span>
                   </div>
                   <p className="text-4xl font-heading">{card.value}</p>
-                  <div className="h-2 rounded-full bg-bite-gray-100 overflow-hidden">
+                  <p className="text-sm text-bite-text-light">{card.detail}</p>
+                  <span className="h-2 rounded-full bg-bite-gray-100 overflow-hidden">
                     <span className="block h-full w-3/4 rounded-full bg-bite-gradient" />
-                  </div>
+                  </span>
                 </div>
               ))}
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-              <div className="xl:col-span-8 space-y-6">
-                <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-xl font-heading">Commandes en cours</h2>
-                      <p className="text-sm text-bite-text-light">
-                        Suivi en temps réel des commandes prioritaires
-                      </p>
-                    </div>
-                    <button className="text-sm font-medium text-bite-primary hover:underline">
-                      Voir tout
-                    </button>
+              <div className="xl:col-span-7 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h2 className="text-xl font-heading">Gestion des restaurants</h2>
+                    <p className="text-sm text-bite-text-light">État global et performance</p>
                   </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left">
-                      <thead className="text-xs uppercase text-bite-text-light border-b border-bite-gray-200">
-                        <tr>
-                          {[
-                            "ID",
-                            "Client",
-                            "Adresse",
-                            "Statut",
-                            "Heure",
-                            "Livreur",
-                            "Actions",
-                          ].map((col) => (
-                            <th key={col} className="py-3 pr-4">
-                              {col}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-bite-gray-100">
-                        {orders.map((order) => (
-                          <tr
-                            key={order.id}
-                            className="transition-colors duration-200 hover:bg-bite-gray-50/60"
-                          >
-                            <td className="py-4 pr-4 font-semibold text-bite-dark">
-                              {order.id}
-                            </td>
-                            <td className="py-4 pr-4">{order.client}</td>
-                            <td className="py-4 pr-4 text-bite-text-light">
-                              {order.address}
-                            </td>
-                            <td className="py-4 pr-4">
-                              <span
-                                className={classNames(
-                                  "px-3 py-1 rounded-full text-xs font-semibold",
-                                  statusColors[order.status]
-                                )}
-                              >
-                                {order.status}
-                              </span>
-                            </td>
-                            <td className="py-4 pr-4">{order.time}</td>
-                            <td className="py-4 pr-4 text-bite-text-light">
-                              {order.driver}
-                            </td>
-                            <td className="py-4 pr-4">
-                              <button className="text-bite-primary text-xs font-semibold hover:underline">
-                                Détails
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  <button className="text-sm font-semibold text-bite-primary hover:underline">
+                    Ajouter un restaurant
+                  </button>
                 </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-heading">Ventes hebdo</h2>
-                      <span className="text-sm text-bite-text-light">
-                        +14% vs semaine dernière
-                      </span>
-                    </div>
-                    <div className="relative h-48">
-                      <svg
-                        viewBox="0 0 100 100"
-                        className="absolute inset-0 w-full h-full"
-                        preserveAspectRatio="none"
-                      >
-                        <defs>
-                          <linearGradient
-                            id="salesGradient"
-                            x1="0%"
-                            y1="0%"
-                            x2="100%"
-                            y2="0%"
-                          >
-                            <stop offset="0%" stopColor="#A30000" />
-                            <stop offset="100%" stopColor="#FFC107" />
-                          </linearGradient>
-                        </defs>
-                        <polyline
-                          points={linePoints}
-                          fill="none"
-                          stroke="url(#salesGradient)"
-                          strokeWidth="4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-x-0 bottom-0 flex justify-between text-xs text-bite-text-light px-1">
-                        {weeklySales.map((item) => (
-                          <span key={item.day}>{item.day}</span>
+                <div className="rounded-2xl border border-bite-gray-100 overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-bite-gray-50 text-bite-text-light uppercase text-xs tracking-wide">
+                      <tr>
+                        {["Restaurant", "Statut", "Commandes", ""].map((col) => (
+                          <th key={col} className="px-6 py-4 text-left">
+                            {col}
+                          </th>
                         ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-heading">
-                        Statut des commandes
-                      </h2>
-                      <span className="text-sm text-bite-text-light">
-                        Aujourd&apos;hui
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div
-                        className="relative h-40 w-40 rounded-full"
-                        style={{
-                          background: `conic-gradient(${statusDistribution
-                            .map((status, index) => {
-                              const start = statusDistribution
-                                .slice(0, index)
-                                .reduce((sum, item) => sum + item.value, 0);
-                              const startPercent =
-                                (start / totalStatus) * 360;
-                              const endPercent =
-                                ((start + status.value) / totalStatus) * 360;
-                              return `${status.color} ${startPercent}deg ${endPercent}deg`;
-                            })
-                            .join(", ")})`,
-                        }}
-                      >
-                        <div className="absolute inset-4 rounded-full bg-white flex flex-col items-center justify-center">
-                          <p className="text-xl font-heading text-bite-dark">
-                            {totalStatus}
-                          </p>
-                          <p className="text-xs text-bite-text-light text-center">
-                            commandes
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-3">
-                        {statusDistribution.map((status) => (
-                          <div
-                            key={status.label}
-                            className="flex items-center gap-3"
-                          >
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-bite-gray-100">
+                      {restaurants.map((restaurant) => (
+                        <tr key={restaurant.name} className="hover:bg-bite-gray-50/80 transition-colors">
+                          <td className="px-6 py-4 flex items-center gap-3">
+                            <span className="h-10 w-10 rounded-2xl bg-bite-gray-100 text-bite-dark font-semibold flex items-center justify-center">
+                              {restaurant.logo}
+                            </span>
+                            <span className="font-semibold text-bite-dark">{restaurant.name}</span>
+                          </td>
+                          <td className="px-6 py-4">
                             <span
-                              className="h-3 w-3 rounded-full"
-                              style={{ backgroundColor: status.color }}
-                            />
-                            <div>
-                              <p className="text-sm font-medium">
-                                {status.label}
-                              </p>
-                              <p className="text-xs text-bite-text-light">
-                                {status.value}% des commandes
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-heading">Suivi des livreurs</h2>
-                    <button className="text-sm font-medium text-bite-primary hover:underline">
-                      Gérer les shifts
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {drivers.map((driver) => (
-                      <div
-                        key={driver.name}
-                        className="border border-bite-gray-100 rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300 hover:border-bite-primary/40 hover:-translate-y-0.5"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-semibold text-bite-dark">
-                              {driver.name}
-                            </p>
-                            <p className="text-xs text-bite-text-light">
-                              Dernière activité {driver.lastActive}
-                            </p>
-                          </div>
-                          <span
-                            className={classNames(
-                              "px-3 py-1 rounded-full text-xs font-semibold",
-                              driverStatusColors[driver.status]
-                            )}
-                          >
-                            {driver.status}
-                          </span>
-                        </div>
-                        <button className="self-start text-xs font-semibold text-bite-primary hover:underline">
-                          Détails
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                              className={classNames(
+                                "px-3 py-1 rounded-full text-xs font-semibold",
+                                restaurant.status === "Actif"
+                                  ? "bg-bite-primary/10 text-bite-primary"
+                                  : "bg-bite-dark/10 text-bite-dark"
+                              )}
+                            >
+                              {restaurant.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-bite-text-light">{restaurant.orders}</td>
+                          <td className="px-6 py-4 text-right">
+                            <button className="text-sm font-semibold text-bite-primary hover:underline">
+                              Gérer
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
-              <div className="xl:col-span-4 space-y-6">
-                <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
-                  <h2 className="text-xl font-heading mb-4">
-                    Notifications & alertes
-                  </h2>
-                  <div className="space-y-4">
-                    {notifications.map((notification) => (
-                      <div
-                        key={notification.title}
-                        className={classNames(
-                          "rounded-2xl border p-4 bg-bite-gray-50/60",
-                          notificationColors[notification.type]
-                        )}
-                      >
-                        <div className="flex items-center justify-between">
-                          <p className="font-semibold text-bite-dark">
-                            {notification.title}
-                          </p>
-                          <span className="text-xs text-bite-text-light">
-                            {notification.time}
-                          </span>
-                        </div>
-                        <p className="text-sm text-bite-text-light mt-1">
-                          {notification.detail}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+              <div className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-heading">Rôles & accès</h2>
+                  <button className="text-sm font-semibold text-bite-primary hover:underline">
+                    Gestion des rôles
+                  </button>
                 </div>
-
-                <div className="bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
-                  <h2 className="text-xl font-heading mb-4">
-                    Planification
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="rounded-2xl border border-dashed border-bite-gray-200 p-4 text-sm text-bite-text-light">
-                      Configurez vos créneaux de préparation pour optimiser les
-                      pics de commandes.
+                <div className="grid grid-cols-2 gap-4">
+                  {roles.map((role) => (
+                    <div key={role.label} className="border border-bite-gray-100 rounded-2xl p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold text-bite-dark">{role.label}</p>
+                        <span className={classNames("text-xs font-semibold px-2 py-1 rounded-full", role.accent)}>
+                          {role.count}
+                        </span>
+                      </div>
+                      <p className="text-xs text-bite-text-light">{role.description}</p>
+                      <div className="flex gap-2">
+                        <button className="text-xs font-semibold text-bite-primary">Ajouter</button>
+                        <button className="text-xs text-bite-text-light">Suspendre</button>
+                        <button className="text-xs text-bite-text-light">Modifier</button>
+                      </div>
                     </div>
-                    <button className="w-full bg-bite-gradient text-bite-dark font-semibold py-3 rounded-2xl shadow-bite-lg transition-all duration-300 hover:-translate-y-0.5">
-                      Créer un créneau
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div className="xl:col-span-5 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-heading">Livreurs actifs</h2>
+                  <button className="text-sm font-semibold text-bite-primary hover:underline">
+                    Voir tout
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {drivers.map((driver) => (
+                    <div
+                      key={driver.name}
+                      className="rounded-2xl border border-bite-gray-100 p-4 flex items-center justify-between hover:border-bite-primary/40 transition-all"
+                    >
+                      <div>
+                        <p className="font-semibold text-bite-dark">{driver.name}</p>
+                        <p className="text-xs text-bite-text-light">{driver.lastActive}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={classNames(
+                            "px-3 py-1 rounded-full text-xs font-semibold",
+                            driverStatusColors[driver.status]
+                          )}
+                        >
+                          {driver.status}
+                        </span>
+                        <button className="text-xs font-semibold text-bite-primary">Détails</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="xl:col-span-7 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6">
+                <div className="flex flex-wrap items-center gap-3 mb-5">
+                  <h2 className="text-xl font-heading flex-1">Commandes globales</h2>
+                  {["Date", "Restaurant", "Statut"].map((filter) => (
+                    <button key={filter} className="px-4 py-2 rounded-2xl border border-bite-gray-200 text-xs font-semibold text-bite-text-light hover:text-bite-dark">
+                      {filter}
                     </button>
-                  </div>
+                  ))}
+                  <button className="px-4 py-2 rounded-2xl bg-bite-primary text-white text-xs font-semibold shadow-bite-lg">
+                    + Filtres
+                  </button>
+                </div>
+                <div className="rounded-2xl border border-bite-gray-100 overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-bite-gray-50 text-bite-text-light uppercase text-xs tracking-wide">
+                      <tr>
+                        {["ID", "Restaurant", "Client", "Statut", "Montant", "Heure", ""].map((col) => (
+                          <th key={col} className="px-5 py-3 text-left">
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-bite-gray-100">
+                      {orders.map((order) => (
+                        <tr key={order.id} className="hover:bg-bite-gray-50/80 transition-colors">
+                          <td className="px-5 py-3 font-semibold text-bite-dark">{order.id}</td>
+                          <td className="px-5 py-3">{order.restaurant}</td>
+                          <td className="px-5 py-3 text-bite-text-light">{order.client}</td>
+                          <td className="px-5 py-3">
+                            <span
+                              className={classNames(
+                                "px-3 py-1 rounded-full text-xs font-semibold",
+                                orderStatusColors[order.status]
+                              )}
+                            >
+                              {order.status}
+                            </span>
+                          </td>
+                          <td className="px-5 py-3">{order.total}</td>
+                          <td className="px-5 py-3 text-bite-text-light">{order.date}</td>
+                          <td className="px-5 py-3 text-right">
+                            <button className="text-xs font-semibold text-bite-primary hover:underline">
+                              Actions
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div className="xl:col-span-6 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-heading">Paiements</h2>
+                  <button className="text-sm font-semibold text-bite-primary hover:underline">
+                    Voir les rapports
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  {payments.map((payment) => (
+                    <div key={payment.label} className="border border-bite-gray-100 rounded-2xl p-4 space-y-2">
+                      <p className="text-xs text-bite-text-light uppercase tracking-wide">{payment.label}</p>
+                      <p className="text-2xl font-heading text-bite-dark">{payment.value}</p>
+                      <p className="text-xs text-bite-text-light">{payment.detail}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="relative h-40">
+                  <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="paymentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#A30000" />
+                        <stop offset="100%" stopColor="#FFC107" />
+                      </linearGradient>
+                    </defs>
+                    <polyline
+                      points={paymentChart
+                        .map((value, index) => {
+                          const x = (index / (paymentChart.length - 1)) * 100;
+                          const y = 100 - (value / maxPayment) * 100;
+                          return `${x},${y}`;
+                        })
+                        .join(" ")}
+                      fill="none"
+                      stroke="url(#paymentGradient)"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <polyline
+                      points={`0,100 ${paymentChart
+                        .map((value, index) => {
+                          const x = (index / (paymentChart.length - 1)) * 100;
+                          const y = 100 - (value / maxPayment) * 100;
+                          return `${x},${y}`;
+                        })
+                        .join(" ")} 100,100`}
+                      fill="url(#paymentGradient)"
+                      opacity="0.15"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 border border-dashed border-bite-gray-200 rounded-2xl" />
+                </div>
+              </div>
+
+              <div className="xl:col-span-6 bg-white rounded-3xl border border-bite-gray-200 shadow-bite p-6 space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-heading">Paramètres & configuration</h2>
+                  <button className="text-sm font-semibold text-bite-primary hover:underline">Tout configurer</button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {configSections.map((section) => (
+                    <div
+                      key={section.title}
+                      className="border border-bite-gray-100 rounded-2xl p-4 flex flex-col gap-3 hover:border-bite-primary/40 transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="h-10 w-10 rounded-2xl bg-bite-gray-100 flex items-center justify-center text-bite-primary">
+                          {icons[section.icon]}
+                        </span>
+                        <p className="font-semibold text-bite-dark">{section.title}</p>
+                      </div>
+                      <p className="text-sm text-bite-text-light">{section.description}</p>
+                      <div className="flex items-center justify-between">
+                        <button className="text-xs font-semibold text-bite-primary">Configurer</button>
+                        <button className="text-xs text-bite-text-light">Modifier</button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
